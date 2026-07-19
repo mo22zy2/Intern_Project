@@ -1,0 +1,121 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktranslate %}Receipt #{{ order.id }}{% endblocktranslate %}{% endblock %}
+
+{% block content %}
+
+<div class="receipt-wrapper">
+    <div class="receipt" id="receipt-content">
+
+        <div class="receipt-header">
+            <div class="receipt-brand">Django Eats</div>
+            <div class="receipt-title">RECEIPT</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-meta">
+            <div class="receipt-meta-row">
+                <span>Order</span>
+                <span>#{{ order.id }}</span>
+            </div>
+            <div class="receipt-meta-row">
+                <span>Date</span>
+                <span>{{ order.created_at|date:"M d, Y" }}</span>
+            </div>
+            <div class="receipt-meta-row">
+                <span>Time</span>
+                <span>{{ order.created_at|date:"g:i A" }}</span>
+            </div>
+            <div class="receipt-meta-row">
+                <span>Type</span>
+                <span>{{ order.delivery_type|title }}</span>
+            </div>
+        </div>
+
+        {% if order.delivery_type == "delivery" and order.delivery_address %}
+        <div class="receipt-address">
+            Deliver to: {{ order.delivery_address }}
+        </div>
+        {% elif order.delivery_type == "dine_in" and order.reservation %}
+        <div class="receipt-address">
+            Dine-in: {{ order.reservation.reservation_date|date:"D, M d" }} @ {{ order.reservation.reservation_time|time:"g:i A" }} &middot; {{ order.reservation.seats }} seat{{ order.reservation.seats|pluralize }}
+        </div>
+        {% endif %}
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-items">
+            <div class="receipt-items-header">
+                <span class="receipt-col-item">Item</span>
+                <span class="receipt-col-qty">Qty</span>
+                <span class="receipt-col-price">Price</span>
+            </div>
+            {% for item in items %}
+            <div class="receipt-item">
+                <div class="receipt-item-top">
+                    <span class="receipt-col-item">{{ item.menu.item.item_name }}{% if item.menu_options_text %}<br><small>{{ item.menu_options_text }}</small>{% endif %}</span>
+                    <span class="receipt-col-qty">{{ item.quantity }}</span>
+                    <span class="receipt-col-price">EGP{{ item.line_total|floatformat:2 }}</span>
+                </div>
+                <div class="receipt-item-unit">EGP{{ item.unit_price|floatformat:2 }} ea</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-totals">
+            <div class="receipt-total-row">
+                <span>Total</span>
+                <span>EGP{{ order.total_price|floatformat:2 }}</span>
+            </div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        {% with payment=order.payment %}
+        {% if payment %}
+        <div class="receipt-payment">
+            <div class="receipt-payment-row">
+                <span>Payment</span>
+                <span>{{ payment.payment_method.method_type }}</span>
+            </div>
+            <div class="receipt-payment-row">
+                <span>Amount</span>
+                <span>EGP{{ payment.amount|floatformat:2 }}</span>
+            </div>
+            {% if payment.paid_at %}
+            <div class="receipt-payment-row">
+                <span>Paid at</span>
+                <span>{{ payment.paid_at|date:"M d, Y g:i A" }}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="receipt-divider"></div>
+        {% endif %}
+        {% endwith %}
+
+        {% if order.qr_data %}
+        <div class="receipt-qr">
+            <img src="data:image/png;base64,{{ order.qr_data }}" alt="QR Code" width="140" height="140">
+            <div class="receipt-qr-label">Scan to review Django Eats on Menu page</div>
+        </div>
+        <div class="receipt-divider"></div>
+        {% endif %}
+
+        <div class="receipt-footer">
+            Thank you for your order!<br>
+            Django Eats
+        </div>
+
+    </div>
+</div>
+
+<div class="receipt-actions">
+    <button onclick="window.print()" class="btn">Print Receipt</button>
+    <a href="{% url 'order_history' %}" class="btn btn-secondary">&larr; Back to Orders</a>
+</div>
+
+{% endblock %}

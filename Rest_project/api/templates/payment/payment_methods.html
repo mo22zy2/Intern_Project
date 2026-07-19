@@ -1,0 +1,66 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Payment Methods" %}{% endblock %}
+
+{% block content %}
+
+<div class="payment-page">
+
+    <h1>Payment Methods</h1>
+
+    {% for m in methods %}
+    <div class="payment-card {% if m.is_default %}default-payment{% endif %}">
+        <div class="payment-card-body">
+            <strong>{{ m.method_type }}</strong>
+            {% if m.is_default %}<span class="default-badge">Default</span>{% endif %}
+        </div>
+        <div class="payment-card-actions">
+            {% if not m.is_default %}
+            <form method="POST" action="{% url 'set_default_payment_method' m.id %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-secondary">Set Default</button>
+            </form>
+            {% endif %}
+            <form method="POST" action="{% url 'delete_payment_method' m.id %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-cancel">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <p>No saved cards.</p>
+    {% endfor %}
+
+    <hr>
+    <h2>Add New Card</h2>
+    <form method="POST" action="{% url 'add_payment_method' %}" class="payment-form">
+        {% csrf_token %}
+        <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <div>
+                <label>Card Number</label>
+                <input type="text" name="card_number" placeholder="1234 5678 9012 3456" class="form-input" required>
+            </div>
+            <div>
+                <label>Cardholder Name</label>
+                <input type="text" name="cardholder_name" placeholder="John Doe" class="form-input" required>
+            </div>
+            <div>
+                <label>Expiry (MM/YY)</label>
+                <input type="text" name="expiry" placeholder="12/28" class="form-input" required>
+            </div>
+            <div>
+                <label>CVV</label>
+                <input type="text" name="cvv" placeholder="123" class="form-input" required>
+            </div>
+        </div>
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_default">
+            Set as default
+        </label>
+        <button type="submit" class="btn" style="margin-top:12px">Save Card</button>
+    </form>
+
+</div>
+
+{% endblock %}

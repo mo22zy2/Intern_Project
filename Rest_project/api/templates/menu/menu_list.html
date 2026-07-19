@@ -1,0 +1,108 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Menu" %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>Our Menu</h1>
+
+    <form method="get" class="filter-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search menu..."
+            value="{{ search }}"
+        >
+
+        <select name="category">
+            <option value="">All Categories</option>
+
+            {% for category in categories %}
+                <option
+                    value="{{ category.pk }}"
+                    {% if selected_category == category.pk %}selected{% endif %}
+                >
+                    {{ category.category_name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="sort">
+            <option value="">Sort: Most Popular</option>
+            <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+        </select>
+
+        <button type="submit">Filter</button>
+
+    </form>
+
+    <div class="menu-grid">
+
+        {% for menu in items %}
+<a href="{% url 'menu_detail' menu.id %}">
+            <div class="menu-card">
+
+                <img
+                    src="{{ menu.image_url }}"
+                    alt="{{ menu.item.item_name }}"
+                    class="menu-image"
+                >
+
+                <div class="menu-content">
+
+                    <span class="menu-category">
+                        {{ menu.category.category_name }}
+                    </span>
+
+                    <h3>{{ menu.item.item_name }}</h3>
+
+                    <p class="price">
+                       {{ menu.price }} EGP
+                    </p>
+
+                    <p>
+                        Ordered:
+                         {{ menu.popularity_score }}+ times!
+                    </p>
+
+                    {% if menu.avg_rating %}
+                    <p class="rating-stars">
+                        {% with ''|center:menu.avg_rating|floatformat:0 as range %}
+                        {% for _ in range %}★{% endfor %}
+                        {% endwith %}
+                        {{ menu.avg_rating|floatformat:1 }}
+                    </p>
+                    {% endif %}
+
+                    {% if menu.available %}
+                        <span class="badge available">
+                            Available
+                        </span>
+                    {% else %}
+                        <span class="badge unavailable">
+                            Unavailable
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+            </a>
+
+        {% empty %}
+
+            <h3>No menu items found.</h3>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

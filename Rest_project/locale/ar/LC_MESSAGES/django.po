@@ -1,0 +1,804 @@
+# Arabic translation for Django Eats
+# Copyright (C) 2026
+# This file is distributed under the same license as the Django Eats project.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Django Eats 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-19 14:00+0200\n"
+"PO-Revision-Date: 2026-07-19 14:00+0200\n"
+"Last-Translator: \n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: templates/master.html
+msgid "Django Eats"
+msgstr "ديجانغو إيتس"
+
+#: templates/master.html templates/auth/master.html
+msgid "Toggle menu"
+msgstr "تبديل القائمة"
+
+msgid "Menu"
+msgstr "القائمة"
+
+msgid "Cart"
+msgstr "السلة"
+
+msgid "Orders"
+msgstr "الطلبات"
+
+msgid "Reservations"
+msgstr "الحجوزات"
+
+msgid "My Profile"
+msgstr "ملفي"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Register"
+msgstr "إنشاء حساب"
+
+msgid "Home"
+msgstr "الرئيسية"
+
+#: templates/master.html templates/auth/master.html
+msgid "Support"
+msgstr "الدعم"
+
+msgid "Type your message…"
+msgstr "اكتب رسالتك…"
+
+msgid "Send message"
+msgstr "إرسال"
+
+msgid "Toggle chat"
+msgstr "فتح المحادثة"
+
+msgid "Minimize chat"
+msgstr "تصغير"
+
+#: templates/home.html
+msgid "Welcome back"
+msgstr "مرحباً بعودتك"
+
+msgid "Good to see you. Here's what's happening today."
+msgstr "سعدنا برؤيتك. إليك ما يحدث اليوم."
+
+msgid "Total Orders"
+msgstr "إجمالي الطلبات"
+
+msgid "Upcoming Reservations"
+msgstr "الحجوزات القادمة"
+
+msgid "Menu Items"
+msgstr "عناصر القائمة"
+
+msgid "Browse Menu"
+msgstr "تصفح القائمة"
+
+msgid "View Cart"
+msgstr "عرض السلة"
+
+msgid "My Orders"
+msgstr "طلباتي"
+
+msgid "Book a Table"
+msgstr "احجز طاولة"
+
+msgid "Popular This Week"
+msgstr "الأكثر رواجاً هذا الأسبوع"
+
+msgid "FLAVOR UNLEASHED"
+msgstr "النكهة المتألقة"
+
+msgid "Bold plates. Big flavors. Zero compromise."
+msgstr "أطباق جريئة. نكهات كبيرة. بدون حلول وسط."
+
+msgid "VIEW MENU"
+msgstr "تصفح القائمة"
+
+msgid "JOIN NOW"
+msgstr "انضم الآن"
+
+msgid "Categories"
+msgstr "التصنيفات"
+
+msgid "Fresh Kitchen"
+msgstr "مطبخ طازج"
+
+msgid "SIGNATURE DISHES"
+msgstr "أطباق مميزة"
+
+msgid "DON'T JUST EAT. EXPERIENCE."
+msgstr "لا تأكل فقط. اختبر التجربة."
+
+msgid "Sign up today and taste the difference."
+msgstr "سجل اليوم وتذوق الفرق."
+
+msgid "CREATE ACCOUNT"
+msgstr "إنشاء حساب"
+
+msgid "SIGN IN"
+msgstr "تسجيل الدخول"
+
+#: templates/auth/login.html
+msgid "Welcome Back"
+msgstr "مرحباً بعودتك"
+
+msgid "Sign in to continue ordering your favorite meals."
+msgstr "سجل الدخول لمتابعة طلب وجباتك المفضلة."
+
+msgid "Username"
+msgstr "اسم المستخدم"
+
+msgid "Password"
+msgstr "كلمة المرور"
+
+msgid "Don't have an account?"
+msgstr "ليس لديك حساب؟"
+
+msgid "Register here"
+msgstr "سجل هنا"
+
+#: templates/auth/register.html
+msgid "Create Account"
+msgstr "إنشاء حساب"
+
+msgid "Join us and start ordering your favorite meals."
+msgstr "انضم إلينا وابدأ في طلب وجباتك المفضلة."
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Confirm Password"
+msgstr "تأكيد كلمة المرور"
+
+msgid "First Name"
+msgstr "الاسم الأول"
+
+msgid "Last Name"
+msgstr "اسم العائلة"
+
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+#: templates/menu/menu_list.html
+msgid "Our Menu"
+msgstr "قائمتنا"
+
+msgid "Search menu..."
+msgstr "ابحث في القائمة..."
+
+msgid "All Categories"
+msgstr "جميع التصنيفات"
+
+msgid "Sort: Most Popular"
+msgstr "الترتيب: الأكثر رواجاً"
+
+msgid "Price: Low to High"
+msgstr "السعر: من الأقل إلى الأعلى"
+
+msgid "Price: High to Low"
+msgstr "السعر: من الأعلى إلى الأقل"
+
+msgid "Newest First"
+msgstr "الأحدث أولاً"
+
+msgid "Filter"
+msgstr "تصفية"
+
+msgid "Available"
+msgstr "متوفر"
+
+msgid "Unavailable"
+msgstr "غير متوفر"
+
+msgid "No menu items found."
+msgstr "لا توجد عناصر في القائمة."
+
+#: templates/menu/menu_detail.html
+msgid "Customization Options"
+msgstr "خيارات التخصيص"
+
+msgid "Quantity"
+msgstr "الكمية"
+
+msgid "Add to Cart"
+msgstr "أضف إلى السلة"
+
+msgid "Proceed to Checkout"
+msgstr "متابعة الدفع"
+
+msgid "No customization options available."
+msgstr "لا توجد خيارات تخصيص متاحة."
+
+msgid "Reviews"
+msgstr "التقييمات"
+
+msgid "Rating"
+msgstr "التقييم"
+
+msgid "Comment (optional)"
+msgstr "تعليق (اختياري)"
+
+msgid "Share your thoughts..."
+msgstr "شارك بتعليقك..."
+
+msgid "Submit Review"
+msgstr "إرسال التقييم"
+
+msgid "Log in to leave a review."
+msgstr "سجل الدخول لترك تقييم."
+
+msgid "No reviews yet."
+msgstr "لا توجد تقييمات بعد."
+
+msgid "Edit your review"
+msgstr "تعديل تقييمك"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Ordered"
+msgstr "تم الطلب"
+
+#: templates/cart/cart.html
+msgid "My Cart"
+msgstr "سلتي"
+
+msgid "Item"
+msgstr "العنصر"
+
+msgid "Price"
+msgstr "السعر"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "Subtotal:"
+msgstr "المجموع الفرعي:"
+
+msgid "Continue Shopping"
+msgstr "متابعة التسوق"
+
+msgid "Your cart is empty."
+msgstr "سلتك فارغة."
+
+msgid "Remove"
+msgstr "إزالة"
+
+#: templates/orders/checkout.html
+msgid "Checkout"
+msgstr "الدفع"
+
+msgid "Qty"
+msgstr "الكمية"
+
+msgid "Order Type"
+msgstr "نوع الطلب"
+
+msgid "Delivery"
+msgstr "توصيل"
+
+msgid "Deliver to your address"
+msgstr "توصيل إلى عنوانك"
+
+msgid "Dine-in"
+msgstr "تناول في المطعم"
+
+msgid "Reserve a table at the restaurant"
+msgstr "احجز طاولة في المطعم"
+
+msgid "Delivery Address"
+msgstr "عنوان التوصيل"
+
+msgid "Enter your full delivery address"
+msgstr "أدخل عنوان التوصيل الكامل"
+
+msgid "Reservation Details"
+msgstr "تفاصيل الحجز"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Time"
+msgstr "الوقت"
+
+msgid "Number of Seats"
+msgstr "عدد المقاعد"
+
+msgid "Payment Method"
+msgstr "طريقة الدفع"
+
+msgid "Cash on Delivery"
+msgstr "الدفع عند الاستلام"
+
+msgid "Pay when your order arrives"
+msgstr "ادفع عند وصول طلبك"
+
+msgid "Pay with Card"
+msgstr "الدفع بالبطاقة"
+
+msgid "Pay now online"
+msgstr "ادفع الآن عبر الإنترنت"
+
+msgid "Save card for future"
+msgstr "احفظ البطاقة للمستقبل"
+
+msgid "Place Order"
+msgstr "تقديم الطلب"
+
+msgid "Back to Cart"
+msgstr "العودة إلى السلة"
+
+msgid "Cash at Restaurant"
+msgstr "الدفع نقداً في المطعم"
+
+msgid "Pay when you arrive"
+msgstr "ادفع عند وصولك"
+
+#: templates/orders/order_history.html
+msgid "Address:"
+msgstr "العنوان:"
+
+msgid "Items:"
+msgstr "العناصر:"
+
+msgid "Total:"
+msgstr "الإجمالي:"
+
+msgid "View Details"
+msgstr "عرض التفاصيل"
+
+msgid "You haven't placed any orders yet."
+msgstr "لم تقم بتقديم أي طلبات بعد."
+
+#: templates/orders/order_detail.html
+msgid "RECEIPT"
+msgstr "الفاتورة"
+
+msgid "Thank you for your order!"
+msgstr "شكراً لطلبك!"
+
+msgid "Print Receipt"
+msgstr "طباعة الفاتورة"
+
+msgid "Back to Orders"
+msgstr "العودة إلى الطلبات"
+
+msgid "Deliver to:"
+msgstr "التوصيل إلى:"
+
+msgid "Dine-in:"
+msgstr "تناول في المطعم:"
+
+msgid "Scan to review Django Eats on Menu page"
+msgstr "امسح لتقييم ديجانغو إيتس على صفحة القائمة"
+
+#: templates/profile/profile.html
+msgid "My Profile"
+msgstr "ملفي"
+
+msgid "Personal Information"
+msgstr "المعلومات الشخصية"
+
+msgid "Edit Profile"
+msgstr "تعديل الملف الشخصي"
+
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Preferences"
+msgstr "التفضيلات"
+
+msgid "Dark mode"
+msgstr "الوضع الداكن"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "English"
+msgstr "الإنجليزية"
+
+msgid "Arabic"
+msgstr "العربية"
+
+msgid "Change Password"
+msgstr "تغيير كلمة المرور"
+
+msgid "Current Password"
+msgstr "كلمة المرور الحالية"
+
+msgid "New Password"
+msgstr "كلمة المرور الجديدة"
+
+msgid "Confirm New Password"
+msgstr "تأكيد كلمة المرور الجديدة"
+
+msgid "Payment Methods"
+msgstr "طرق الدفع"
+
+msgid "Add"
+msgstr "إضافة"
+
+msgid "Default"
+msgstr "افتراضي"
+
+msgid "Set Default"
+msgstr "تعيين كافتراضي"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "No payment methods saved."
+msgstr "لا توجد طرق دفع محفوظة."
+
+msgid "My Reviews"
+msgstr "تقييماتي"
+
+msgid "Member since"
+msgstr "عضو منذ"
+
+#: templates/reservation/reservation_form.html
+msgid "Edit Reservation"
+msgstr "تعديل الحجز"
+
+msgid "Make a Reservation"
+msgstr "إنشاء حجز"
+
+msgid "Operating hours:"
+msgstr "ساعات العمل:"
+
+msgid "Submit Reservation"
+msgstr "تقديم الحجز"
+
+msgid "Back to Reservations"
+msgstr "العودة إلى الحجوزات"
+
+#: templates/reservation/my_reservations.html
+msgid "My Reservations"
+msgstr "حجوزاتي"
+
+msgid "No reservations yet."
+msgstr "لا توجد حجوزات بعد."
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "seats"
+msgstr "مقاعد"
+
+#: templates/reviews/edit_review.html
+msgid "Edit Review"
+msgstr "تعديل التقييم"
+
+msgid "Add Review"
+msgstr "إضافة تقييم"
+
+msgid "Comment"
+msgstr "تعليق"
+
+#: views/auth_views.py
+msgid "All fields are required."
+msgstr "جميع الحقول مطلوبة."
+
+msgid "Username Already Exists"
+msgstr "اسم المستخدم موجود بالفعل"
+
+msgid "Email Already Exists"
+msgstr "البريد الإلكتروني موجود بالفعل"
+
+msgid "Passwords do not match."
+msgstr "كلمات المرور غير متطابقة."
+
+msgid "Signed up successfully"
+msgstr "تم التسجيل بنجاح"
+
+msgid "Signed in successfully"
+msgstr "تم تسجيل الدخول بنجاح"
+
+msgid "Invalid Username or Password"
+msgstr "اسم المستخدم أو كلمة المرور غير صحيحة"
+
+msgid "You have been logged out successfully."
+msgstr "تم تسجيل الخروج بنجاح."
+
+#: views/order_views.py
+msgid "Your cart is empty."
+msgstr "سلتك فارغة."
+
+msgid "Please enter a delivery address."
+msgstr "يرجى إدخال عنوان التوصيل."
+
+msgid "Please fill in all reservation details."
+msgstr "يرجى ملء جميع تفاصيل الحجز."
+
+msgid "Seats must be a positive number."
+msgstr "يجب أن يكون عدد المقاعد رقماً موجباً."
+
+msgid "Order placed! Pay with cash when you arrive."
+msgstr "تم تقديم الطلب! ادفع نقداً عند وصولك."
+
+msgid "Invalid card number."
+msgstr "رقم البطاقة غير صالح."
+
+msgid "Please select or enter a payment method."
+msgstr "يرجى اختيار أو إدخال طريقة الدفع."
+
+msgid "Payment successful! Your order has been placed."
+msgstr "تم الدفع بنجاح! تم تقديم طلبك."
+
+#: views/profile_views.py
+msgid "Profile updated."
+msgstr "تم تحديث الملف الشخصي."
+
+msgid "Current password is incorrect."
+msgstr "كلمة المرور الحالية غير صحيحة."
+
+msgid "New passwords do not match."
+msgstr "كلمات المرور الجديدة غير متطابقة."
+
+msgid "Password changed."
+msgstr "تم تغيير كلمة المرور."
+
+msgid "Email already in use."
+msgstr "البريد الإلكتروني مستخدم بالفعل."
+
+#: views/reservation_views.py
+msgid "Reservation cannot be in the past."
+msgstr "لا يمكن أن يكون الحجز في الماضي."
+
+msgid "Restaurant hours are 10:00 – 04:00. Please pick a time within operating hours."
+msgstr "ساعات العمل من 10:00 صباحاً إلى 4:00 صباحاً. يرجى اختيار وقت ضمن ساعات العمل."
+
+msgid "Invalid date, time, or seats value."
+msgstr "قيمة التاريخ أو الوقت أو المقاعد غير صالحة."
+
+msgid "Reservation confirmed!"
+msgstr "تم تأكيد الحجز!"
+
+msgid "Reservation updated."
+msgstr "تم تحديث الحجز."
+
+msgid "Cannot edit a cancelled reservation."
+msgstr "لا يمكن تعديل حجز ملغي."
+
+msgid "This reservation is already cancelled."
+msgstr "هذا الحجز ملغي بالفعل."
+
+msgid "Reservation cancelled."
+msgstr "تم إلغاء الحجز."
+
+#: views/review_views.py
+msgid "Review submitted."
+msgstr "تم تقديم التقييم."
+
+msgid "Review updated."
+msgstr "تم تحديث التقييم."
+
+msgid "Review deleted."
+msgstr "تم حذف التقييم."
+
+#: views/cart_views.py
+msgid "Item added to cart."
+msgstr "تمت إضافة العنصر إلى السلة."
+
+msgid "Cart updated."
+msgstr "تم تحديث السلة."
+
+msgid "Item removed from cart."
+msgstr "تمت إزالة العنصر من السلة."
+
+#: views/payment_views.py
+msgid "Payment method added."
+msgstr "تمت إضافة طريقة الدفع."
+
+msgid "Payment method deleted."
+msgstr "تم حذف طريقة الدفع."
+
+msgid "Default payment method updated."
+msgstr "تم تحديث طريقة الدفع الافتراضية."
+
+#: models.py
+msgid "pending"
+msgstr "قيد الانتظار"
+
+msgid "confirmed"
+msgstr "مؤكد"
+
+msgid "completed"
+msgstr "مكتمل"
+
+msgid "cancelled"
+msgstr "ملغي"
+
+msgid "delivery"
+msgstr "توصيل"
+
+msgid "dine_in"
+msgstr "تناول في المطعم"
+
+msgid "cash"
+msgstr "نقداً"
+
+msgid "card"
+msgstr "بطاقة"
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "No"
+msgstr "لا"
+
+msgid "On"
+msgstr "مفعّل"
+
+msgid "Off"
+msgstr "معطّل"
+
+#: views/cart_views.py
+msgid "%(name)s added to cart."
+msgstr "تمت إضافة %(name)s إلى السلة."
+
+#: views/payment_views.py
+msgid "All card fields are required."
+msgstr "جميع حقول البطاقة مطلوبة."
+
+msgid "Card saved."
+msgstr "تم حفظ البطاقة."
+
+msgid "Card removed."
+msgstr "تم حذف البطاقة."
+
+msgid "Default card updated."
+msgstr "تم تحديث البطاقة الافتراضية."
+
+#: views/review_views.py
+msgid "You already reviewed this item."
+msgstr "لقد قمت بتقييم هذا العنصر بالفعل."
+
+msgid "Rating must be between 1 and 5."
+msgstr "يجب أن يكون التقييم بين 1 و 5."
+
+msgid "Review deleted."
+msgstr "تم حذف التقييم."
+
+#: templates/home.html
+msgid "Welcome back, %(name)s!"
+msgstr "مرحباً بعودتك، %(name)s!"
+
+msgid "Here's what's happening today."
+msgstr "إليك ما يحدث اليوم."
+
+msgid "Upcoming Reservations"
+msgstr "الحجوزات القادمة"
+
+msgid "Recent Orders"
+msgstr "الطلبات الأخيرة"
+
+msgid "seat"
+msgstr "مقعد"
+
+msgid "seats"
+msgstr "مقاعد"
+
+#: templates/auth/login.html
+msgid "Don't have an account?"
+msgstr "ليس لديك حساب؟"
+
+msgid "Register here"
+msgstr "سجل هنا"
+
+#: templates/cart/cart.html
+msgid "Proceed to Checkout"
+msgstr "متابعة الدفع"
+
+msgid "Continue Shopping"
+msgstr "متابعة التسوق"
+
+msgid "Cart updated."
+msgstr "تم تحديث السلة."
+
+msgid "Item removed from cart."
+msgstr "تمت إزالة العنصر من السلة."
+
+#: templates/orders/checkout.html
+msgid "Order Type"
+msgstr "نوع الطلب"
+
+msgid "Delivery"
+msgstr "توصيل"
+
+msgid "Dine-in"
+msgstr "تناول في المطعم"
+
+msgid "Reservation Details"
+msgstr "تفاصيل الحجز"
+
+msgid "Cash on Delivery"
+msgstr "الدفع عند الاستلام"
+
+msgid "Cash at Restaurant"
+msgstr "الدفع في المطعم"
+
+msgid "Pay when you arrive"
+msgstr "ادفع عند وصولك"
+
+msgid "Set as default"
+msgstr "تعيين كافتراضي"
+
+msgid "Save Card"
+msgstr "حفظ البطاقة"
+
+msgid "No saved cards."
+msgstr "لا توجد بطاقات محفوظة."
+
+msgid "Card Number"
+msgstr "رقم البطاقة"
+
+msgid "Cardholder Name"
+msgstr "اسم حامل البطاقة"
+
+msgid "Expiry (MM/YY)"
+msgstr "تاريخ الانتهاء (شهر/سنة)"
+
+msgid "CVV"
+msgstr "رمز CVV"
+
+msgid "Add New Card"
+msgstr "إضافة بطاقة جديدة"
+
+msgid "Set as default payment method"
+msgstr "تعيين كوسيلة دفع افتراضية"
+
+msgid "Delete this payment method?"
+msgstr "حذف طريقة الدفع هذه؟"
+
+msgid "Are you sure you want to logout?"
+msgstr "هل أنت متأكد من تسجيل الخروج؟"
+
+msgid "Restaurant"
+msgstr "المطعم"
+
+msgid "Main navigation"
+msgstr "القائمة الرئيسية"
+
+msgid "Order & DineIn"
+msgstr "طلب وتناول في المطعم"
+
+msgid "Paid at"
+msgstr "تم الدفع في"
+
+msgid "Payment"
+msgstr "الدفع"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Print Receipt"
+msgstr "طباعة الفاتورة"
+
+msgid "Back to Orders"
+msgstr "العودة إلى الطلبات"
+
+msgid "You have no reservations yet."
+msgstr "لا توجد حجوزات لك بعد."
+
+msgid "Make a Reservation"
+msgstr "إنشاء حجز"

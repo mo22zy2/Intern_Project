@@ -1,0 +1,47 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Reviews" %}{% endblock %}
+
+{% block content %}
+
+<div class="reviews-page">
+
+    <h1>My Reviews</h1>
+
+    {% for r in reviews %}
+    <div class="review-card">
+        <div class="review-card-header">
+            <a href="{% url 'menu_detail' r.menu.id %}" class="review-item-name">{{ r.menu.item.item_name }}</a>
+            <span class="review-category">{{ r.menu.category.category_name }}</span>
+        </div>
+        <div class="review-rating">
+            {% with ''|center:r.rating as range %}
+            {% for _ in range %}★{% endfor %}
+            {% endwith %}
+            {% with ''|center:5 as range %}
+            {% for _ in range %}
+                {% if forloop.counter0 >= r.rating %}☆{% endif %}
+            {% endfor %}
+            {% endwith %}
+            <span class="rating-text">{{ r.rating }}/5</span>
+        </div>
+        {% if r.comment %}
+        <p class="review-comment">{{ r.comment }}</p>
+        {% endif %}
+        <p class="review-date">{{ r.created_at|date:"M d, Y" }}</p>
+        <div class="review-card-actions">
+            <a href="{% url 'edit_review' r.id %}" class="btn btn-sm">Edit</a>
+            <form method="POST" action="{% url 'delete_review' r.id %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-cancel">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <p>No reviews yet.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

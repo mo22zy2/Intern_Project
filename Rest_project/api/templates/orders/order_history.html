@@ -1,0 +1,41 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Orders" %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>My Orders</h1>
+
+    {% if orders %}
+
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <span class="order-id">Order #{{ order.id }}</span>
+            <span class="order-status {{ order.status }}">{{ order.status|title }}</span>
+            <span class="order-date">{{ order.created_at|date:"M d, Y H:i" }}</span>
+        </div>
+        <div class="order-body">
+            <p><strong>Address:</strong> {{ order.delivery_address }}</p>
+            <p><strong>Items:</strong> {{ order.orderitem_set.count }}</p>
+            <div class="order-total">
+                <strong>Total:</strong> EGP{{ order.total_price|floatformat:2 }}
+            </div>
+            <a href="{% url 'order_detail' order.id %}" class="btn btn-sm">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+
+    <p>You haven't placed any orders yet.</p>
+    <a href="{% url 'menu' %}" class="btn">Browse Menu</a>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

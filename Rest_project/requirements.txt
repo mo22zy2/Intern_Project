@@ -1,0 +1,13 @@
+Django==4.2.30
+polib==1.2.0
+psycopg2-binary==2.9.12
+python-decouple==3.8
+python-dotenv==1.2.1
+Pillow==12.3.0
+qrcode==8.2
+fastapi==0.115.0
+uvicorn==0.30.6
+sqlalchemy==2.0.35
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+pydantic[email-validator]==2.9.2

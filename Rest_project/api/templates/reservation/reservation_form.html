@@ -1,0 +1,38 @@
+{% extends "master.html" %}
+{% load i18n %}
+
+{% block title %}{% if reservation %}{% trans "Edit Reservation" %}{% else %}{% trans "Make a Reservation" %}{% endif %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h1>{% if reservation %}Edit Reservation #{{ reservation.id }}{% else %}Make a Reservation{% endif %}</h1>
+
+    <p class="hours-note">Operating hours: <strong>10:00 – 04:00</strong></p>
+
+    <form method="POST" action="{% if reservation %}{% url 'edit_reservation' reservation.id %}{% else %}{% url 'make_reservation' %}{% endif %}" class="reservation-form">
+        {% csrf_token %}
+
+        <label>
+            Date
+            <input type="date" name="reservation_date" min="{{ today }}" value="{% if reservation %}{{ reservation.reservation_date|date:'Y-m-d' }}{% else %}{{ request.POST.reservation_date }}{% endif %}" required>
+        </label>
+
+        <label>
+            Time
+            <input type="time" name="reservation_time" value="{% if reservation %}{{ reservation.reservation_time|time:'H:i' }}{% else %}{{ request.POST.reservation_time }}{% endif %}" required>
+        </label>
+
+        <label>
+            Number of Seats
+            <input type="number" name="seats" value="{% if reservation %}{{ reservation.seats }}{% else %}{{ request.POST.seats }}{% endif %}" min="1" required>
+        </label>
+
+        <button type="submit" class="btn">{% if reservation %}Save Changes{% else %}Submit Reservation{% endif %}</button>
+        <a href="{% url 'my_reservations' %}" class="btn btn-secondary">Back to Reservations</a>
+    </form>
+
+</div>
+
+{% endblock %}

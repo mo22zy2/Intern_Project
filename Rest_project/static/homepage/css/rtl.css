@@ -1,0 +1,151 @@
+/* ============================================
+   RTL overrides — Arabic
+   ============================================ */
+
+html[dir="rtl"] .nav-links {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+html[dir="rtl"] .nav-links li:first-child {
+    margin-right: 0;
+}
+
+html[dir="rtl"] .nav-dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+html[dir="rtl"] .chat-panel {
+    right: auto;
+    left: 24px;
+}
+
+html[dir="rtl"] .chat-toggle {
+    right: auto;
+    left: 24px;
+}
+
+html[dir="rtl"] .chat-msg.user {
+    align-self: flex-start;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 4px;
+}
+
+html[dir="rtl"] .chat-msg.bot {
+    align-self: flex-end;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 4px;
+}
+
+html[dir="rtl"] .home-stats-row,
+html[dir="rtl"] .home-quick-actions,
+html[dir="rtl"] .home-featured-grid,
+html[dir="rtl"] .menu-grid,
+html[dir="rtl"] .form-grid {
+    direction: rtl;
+}
+
+html[dir="rtl"] .menu-detail {
+    direction: rtl;
+}
+
+html[dir="rtl"] .cart-table th,
+html[dir="rtl"] .cart-table td {
+    text-align: right;
+}
+
+html[dir="rtl"] .profile-table td:first-child {
+    text-align: right;
+    padding-left: 20px;
+    padding-right: 0;
+}
+
+html[dir="rtl"] .nav-logo {
+    letter-spacing: 0;
+}
+
+html[dir="rtl"] .filter-form input,
+html[dir="rtl"] .filter-form select {
+    direction: rtl;
+}
+
+html[dir="rtl"] .order-card .order-header {
+    direction: rtl;
+}
+
+html[dir="rtl"] .receipt {
+    direction: rtl;
+}
+
+html[dir="rtl"] .receipt-items-header .receipt-col-item,
+html[dir="rtl"] .receipt-item-top .receipt-col-item {
+    text-align: right;
+}
+
+html[dir="rtl"] .receipt-meta-row span:first-child {
+    text-align: right;
+}
+
+html[dir="rtl"] .receipt-meta-row span:last-child {
+    text-align: left;
+}
+
+html[dir="rtl"] .delivery-type-selector,
+html[dir="rtl"] .payment-type-selector {
+    direction: rtl;
+}
+
+html[dir="rtl"] .form-actions {
+    direction: rtl;
+}
+
+html[dir="rtl"] .home-order-card .home-order-id,
+html[dir="rtl"] .home-order-card .home-order-total {
+    direction: rtl;
+}
+
+html[dir="rtl"] .home-reservation-card {
+    direction: rtl;
+}
+
+html[dir="rtl"] .profile-card-header {
+    direction: rtl;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+    direction: rtl;
+}
+
+html[dir="rtl"] .payment-list .payment-option {
+    direction: rtl;
+}
+
+html[dir="rtl"] .order-status {
+    direction: rtl;
+}
+
+html[dir="rtl"] .nav-cart-link {
+    direction: rtl;
+}
+
+html[dir="rtl"] .home-hero .hero-title {
+    letter-spacing: 0;
+}
+
+html[dir="rtl"] .home-cta-section h2 {
+    letter-spacing: 0;
+}
+
+@media (max-width: 480px) {
+    html[dir="rtl"] .chat-panel {
+        right: 12px;
+        left: 12px;
+    }
+    html[dir="rtl"] .chat-toggle {
+        right: auto;
+        left: 16px;
+    }
+}

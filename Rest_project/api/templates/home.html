@@ -1,0 +1,160 @@
+{% extends "master.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Home" %}{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<div class="home-dashboard">
+
+    <div class="welcome-banner">
+        <h1>Welcome back, {{ user.first_name|default:user.username }}!</h1>
+        <p>Good to see you. Here's what's happening today.</p>
+    </div>
+
+    <div class="home-stats-row">
+        <div class="home-stat-card">
+            <span class="home-stat-number">{{ total_orders }}</span>
+            <span class="home-stat-label">Total Orders</span>
+        </div>
+        <div class="home-stat-card">
+            <span class="home-stat-number">{{ upcoming_reservations|length }}</span>
+            <span class="home-stat-label">Upcoming Reservations</span>
+        </div>
+        <div class="home-stat-card">
+            <span class="home-stat-number">{{ total_menu_items }}</span>
+            <span class="home-stat-label">Menu Items</span>
+        </div>
+    </div>
+
+    <div class="home-quick-actions">
+        <a href="{% url 'menu' %}" class="btn">Browse Menu</a>
+        <a href="{% url 'view_cart' %}" class="btn">View Cart</a>
+        <a href="{% url 'order_history' %}" class="btn">My Orders</a>
+        <a href="{% url 'make_reservation' %}" class="btn">Book a Table</a>
+    </div>
+
+    {% if upcoming_reservations %}
+    <div class="home-section">
+        <h2>Upcoming Reservations</h2>
+        <div class="home-reservation-list">
+            {% for r in upcoming_reservations %}
+            <div class="home-reservation-card">
+                <div class="home-reservation-date">{{ r.reservation_date|date:"M d, Y" }}</div>
+                <div class="home-reservation-time">{{ r.reservation_time|time:"g:i A" }}</div>
+                <div class="home-reservation-seats">{{ r.seats }} seat{{ r.seats|pluralize }}</div>
+                <span class="order-status {{ r.status }}">{{ r.status|title }}</span>
+                <a href="{% url 'edit_reservation' r.id %}" class="btn btn-sm">Edit</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if recent_orders %}
+    <div class="home-section">
+        <h2>Recent Orders</h2>
+        <div class="home-order-list">
+            {% for o in recent_orders %}
+            <div class="home-order-card">
+                <span class="home-order-id">Order #{{ o.id }}</span>
+                <span class="home-order-total">{{ o.total_price|floatformat:2 }} EGP</span>
+                <span class="order-status {{ o.status }}">{{ o.status|title }}</span>
+                <span class="home-order-date">{{ o.created_at|date:"M d, Y" }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="home-section">
+        <h2>Popular This Week</h2>
+        <div class="home-featured-grid">
+            {% for item in featured_items %}
+            <a href="{% url 'menu_detail' item.id %}" class="home-featured-card">
+                <img src="{{ item.image_url }}" alt="{{ item.item.item_name }}" class="home-featured-img">
+                <div class="home-featured-body">
+                    <span class="home-featured-category">{{ item.category.category_name }}</span>
+                    <h3>{{ item.item.item_name }}</h3>
+                    <span class="price">{{ item.price }} EGP</span>
+                    {% if item.avg_rating %}
+                    <span class="rating-stars">
+                        {% with ''|center:item.avg_rating|floatformat:0 as range %}
+                        {% for _ in range %}★{% endfor %}
+                        {% endwith %}
+                        {{ item.avg_rating|floatformat:1 }}
+                    </span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="home-hero">
+    <div class="hero-bar"></div>
+    <h1 class="hero-title">FLAVOR<br>UNLEASHED</h1>
+    <p class="hero-subtitle">Bold plates. Big flavors. Zero compromise.</p>
+    <div class="hero-actions">
+        <a href="{% url 'menu' %}" class="btn">VIEW MENU</a>
+        <a href="{% url 'register' %}" class="btn btn-outline">JOIN NOW</a>
+    </div>
+</div>
+
+<div class="home-stats-row">
+    <div class="home-stat-card">
+        <span class="home-stat-number">{{ total_menu_items }}</span>
+        <span class="home-stat-label">Menu Items</span>
+    </div>
+    <div class="home-stat-card">
+        <span class="home-stat-number">{{ total_categories }}</span>
+        <span class="home-stat-label">Categories</span>
+    </div>
+    <div class="home-stat-card">
+        <span class="home-stat-number">24/7</span>
+        <span class="home-stat-label">Fresh Kitchen</span>
+    </div>
+</div>
+
+<div class="home-section">
+    <h2>SIGNATURE DISHES</h2>
+    <div class="home-featured-grid">
+        {% for item in featured_items %}
+        <a href="{% url 'menu_detail' item.id %}" class="home-featured-card">
+            <img src="{{ item.image_url }}" alt="{{ item.item.item_name }}" class="home-featured-img">
+            <div class="home-featured-body">
+                <span class="home-featured-category">{{ item.category.category_name }}</span>
+                <h3>{{ item.item.item_name }}</h3>
+                <span class="price">{{ item.price }} EGP</span>
+                {% if item.avg_rating %}
+                <span class="rating-stars">
+                    {% with ''|center:item.avg_rating|floatformat:0 as range %}
+                    {% for _ in range %}★{% endfor %}
+                    {% endwith %}
+                    {{ item.avg_rating|floatformat:1 }}
+                </span>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="home-cta-section">
+    <h2>DON'T JUST EAT. EXPERIENCE.</h2>
+    <p>Sign up today and taste the difference.</p>
+    <div class="home-cta-actions">
+        <a href="{% url 'register' %}" class="btn">CREATE ACCOUNT</a>
+        <a href="{% url 'login' %}" class="btn btn-secondary">SIGN IN</a>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}
