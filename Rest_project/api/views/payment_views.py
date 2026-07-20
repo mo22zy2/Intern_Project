@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from ..models import PaymentMethod
+from ..services import payment_service
 
 
 @login_required(login_url="login")
 def payment_methods(request):
-    methods = PaymentMethod.objects.filter(user=request.user)
+    methods = payment_service.get_user_payment_methods(request.user)
     return render(request, "payment/payment_methods.html", {"methods": methods})
 
 
@@ -26,22 +27,11 @@ def add_payment_method(request):
         messages.error(request, _("All card fields are required."))
         return redirect("payment_methods")
 
-    digits = "".join(c for c in card_number if c.isdigit())
-    if len(digits) < 13:
-        messages.error(request, _("Invalid card number."))
+    try:
+        payment_service.add_payment_method(request.user, card_number, make_default)
+    except ValueError as e:
+        messages.error(request, str(e))
         return redirect("payment_methods")
-
-    last_four = digits[-4:]
-    method_type = f"•••• {last_four}"
-
-    if make_default:
-        PaymentMethod.objects.filter(user=request.user).update(is_default=False)
-
-    PaymentMethod.objects.create(
-        user=request.user,
-        method_type=method_type,
-        is_default=make_default,
-    )
 
     messages.success(request, _("Card saved."))
     return redirect("payment_methods")
@@ -52,8 +42,11 @@ def delete_payment_method(request, method_id):
     method = get_object_or_404(PaymentMethod, id=method_id, user=request.user)
 
     if request.method == "POST":
-        method.delete()
-        messages.success(request, _("Card removed."))
+        try:
+            payment_service.delete_payment_method(request.user, method_id)
+            messages.success(request, _("Card removed."))
+        except PaymentMethod.DoesNotExist:
+            pass
 
     return redirect("payment_methods")
 
@@ -63,9 +56,10 @@ def set_default_payment_method(request, method_id):
     method = get_object_or_404(PaymentMethod, id=method_id, user=request.user)
 
     if request.method == "POST":
-        PaymentMethod.objects.filter(user=request.user).update(is_default=False)
-        method.is_default = True
-        method.save()
-        messages.success(request, _("Default card updated."))
+        try:
+            payment_service.set_default_payment_method(request.user, method_id)
+            messages.success(request, _("Default card updated."))
+        except PaymentMethod.DoesNotExist:
+            pass
 
     return redirect("payment_methods")

@@ -14,9 +14,11 @@ def _safe_base_context_copy(self):
 p = patch.object(BaseContext, "__copy__", _safe_base_context_copy)
 p.start()
 
+from datetime import timedelta
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from api.models import (
     Cart,
@@ -131,7 +133,7 @@ class TestPlaceOrder(TestCase):
         self.assertEqual(order.user, self.user)
         self.assertEqual(order.delivery_type, "delivery")
         self.assertEqual(order.delivery_address, "123 Main St, Cairo")
-        self.assertEqual(order.status, "confirmed")
+        self.assertEqual(order.status, "pending")
         self.assertEqual(order.total_price, 28.98)
 
     def test_place_order_creates_order_items(self):
@@ -190,10 +192,11 @@ class TestPlaceOrder(TestCase):
         self.assertEqual(Payment.objects.count(), 0)
 
     def test_place_order_pickup_creates_reservation(self):
+        future_date = (timezone.now() + timedelta(days=7)).strftime("%Y-%m-%d")
         response = self.client.post(self.place_order_url, {
             "delivery_type": "dine_in",
             "payment_type": "cash",
-            "reservation_date": "2025-12-25",
+            "reservation_date": future_date,
             "reservation_time": "19:00",
             "seats": "4",
         })
@@ -202,7 +205,7 @@ class TestPlaceOrder(TestCase):
         reservation = ReservationSystem.objects.first()
         self.assertEqual(reservation.user, self.user)
         self.assertEqual(reservation.seats, 4)
-        self.assertEqual(reservation.status, "confirmed")
+        self.assertEqual(reservation.status, "pending")
         order = Order.objects.first()
         self.assertIsNotNone(order.reservation)
         self.assertEqual(order.reservation, reservation)

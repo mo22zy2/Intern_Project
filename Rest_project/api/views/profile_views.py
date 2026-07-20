@@ -2,17 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Avg
 from django.utils.translation import gettext as _
-from ..models import User, UserSettings, Review, PaymentMethod
+from ..models import Review, PaymentMethod
+from ..services import profile_service, auth_service
 
 
 @login_required(login_url="login")
 def profile(request):
-    settings, _ = UserSettings.objects.get_or_create(user=request.user)
+    data = profile_service.get_profile_data(request.user)
+    settings = data["settings"]
     reviews_qs = Review.objects.filter(user=request.user).select_related("menu__item", "menu__category").annotate(
         avg_rating=Avg("menu__reviews__rating")
     ).order_by("-created_at")
@@ -29,10 +29,10 @@ def profile(request):
 
 @login_required(login_url="login")
 def edit_profile(request):
-    settings, _ = UserSettings.objects.get_or_create(user=request.user)
+    data = profile_service.get_profile_data(request.user)
+    settings = data["settings"]
 
     if request.method == "POST":
-        user = request.user
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
         email = request.POST.get("email", "").strip()
@@ -45,20 +45,20 @@ def edit_profile(request):
             messages.error(request, _("All fields are required."))
             return render(request, "profile/profile.html", {"settings": settings, "editing": True})
 
-        if email != user.email and User.objects.filter(email=email).exists():
-            messages.error(request, _("Email already in use."))
+        try:
+            profile_service.update_profile(
+                user=request.user,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone=phone,
+                birth=birth,
+                dark_mode=dark_mode,
+                locale=locale,
+            )
+        except ValueError as e:
+            messages.error(request, str(e))
             return render(request, "profile/profile.html", {"settings": settings, "editing": True})
-
-        user.first_name = first_name
-        user.last_name = last_name
-        user.email = email
-        user.phone = phone
-        user.birth = birth
-        user.save()
-
-        settings.dark_mode = dark_mode
-        settings.locale = locale
-        settings.save()
 
         messages.success(request, _("Profile updated."))
         return redirect("profile")
@@ -75,23 +75,12 @@ def change_password(request):
     new = request.POST.get("new_password", "")
     confirm = request.POST.get("confirm_password", "")
 
-    if not request.user.check_password(old):
-        messages.error(request, _("Current password is incorrect."))
-        return redirect("profile")
-
-    if new != confirm:
-        messages.error(request, _("New passwords do not match."))
-        return redirect("profile")
-
     try:
-        validate_password(new, request.user)
-    except ValidationError as e:
-        for error in e.messages:
-            messages.error(request, error)
+        auth_service.change_password(request.user, old, new, confirm)
+    except ValueError as e:
+        messages.error(request, str(e))
         return redirect("profile")
 
-    request.user.set_password(new)
-    request.user.save()
     update_session_auth_hash(request, request.user)
     messages.success(request, _("Password changed."))
     return redirect("profile")

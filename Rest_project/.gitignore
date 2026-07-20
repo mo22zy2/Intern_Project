@@ -1,0 +1,6 @@
+.env
+drop_test_db.py
+PROJECT_ARCHITECTURE.md
+*.md
+rag_dataset/
+locale/

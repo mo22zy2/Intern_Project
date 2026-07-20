@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Avg
 from django.utils.translation import gettext as _
-from ..models import Review, Menu
+from ..models import Menu, Review
+from ..services import review_service
 
 
 @login_required(login_url="login")
@@ -13,27 +13,21 @@ def add_review(request, menu_id):
     if request.method != "POST":
         return redirect("menu_detail", item_id=menu_id)
 
-    if Review.objects.filter(user=request.user, menu=menu).exists():
-        messages.error(request, _("You already reviewed this item."))
-        return redirect("menu_detail", item_id=menu_id)
-
     try:
         rating = int(request.POST.get("rating", 0))
     except (ValueError, TypeError):
         rating = 0
 
-    if rating < 1 or rating > 5:
-        messages.error(request, _("Rating must be between 1 and 5."))
+    try:
+        review_service.add_review(
+            user=request.user,
+            menu=menu,
+            rating=rating,
+            comment=request.POST.get("comment", "").strip(),
+        )
+    except ValueError as e:
+        messages.error(request, str(e))
         return redirect("menu_detail", item_id=menu_id)
-
-    comment = request.POST.get("comment", "").strip()
-
-    Review.objects.create(
-        user=request.user,
-        menu=menu,
-        rating=rating,
-        comment=comment,
-    )
 
     messages.success(request, _("Review submitted."))
     return redirect("menu_detail", item_id=menu_id)
@@ -41,13 +35,15 @@ def add_review(request, menu_id):
 
 @login_required(login_url="login")
 def my_reviews(request):
-    reviews = Review.objects.filter(user=request.user).select_related("menu__item", "menu__category").order_by("-created_at")
+    reviews = review_service.get_user_reviews(request.user)
     return render(request, "reviews/my_reviews.html", {"reviews": reviews})
 
 
 @login_required(login_url="login")
 def edit_review(request, review_id):
-    review = get_object_or_404(Review, id=review_id, user=request.user)
+    review = review_service.get_review(request.user, review_id)
+    if not review:
+        get_object_or_404(Review, id=review_id, user=request.user)
 
     if request.method == "POST":
         try:
@@ -55,13 +51,15 @@ def edit_review(request, review_id):
         except (ValueError, TypeError):
             rating = 0
 
-        if rating < 1 or rating > 5:
-            messages.error(request, _("Rating must be between 1 and 5."))
+        try:
+            review_service.update_review(
+                review,
+                rating=rating,
+                comment=request.POST.get("comment", "").strip(),
+            )
+        except ValueError as e:
+            messages.error(request, str(e))
             return redirect("my_reviews")
-
-        review.rating = rating
-        review.comment = request.POST.get("comment", "").strip()
-        review.save()
 
         messages.success(request, _("Review updated."))
         return redirect("my_reviews")
@@ -71,10 +69,12 @@ def edit_review(request, review_id):
 
 @login_required(login_url="login")
 def delete_review(request, review_id):
-    review = get_object_or_404(Review, id=review_id, user=request.user)
+    review = review_service.get_review(request.user, review_id)
+    if not review:
+        get_object_or_404(Review, id=review_id, user=request.user)
 
     if request.method == "POST":
-        review.delete()
+        review_service.delete_review(review)
         messages.success(request, _("Review deleted."))
 
     return redirect("my_reviews")

@@ -1,11 +1,21 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from .django_setup import setup_django
 from .routers import (
-    auth, home, menu, cart, order, reservation, profile, review, payment
+    auth, home, menu, cart, order, reservation, profile, review, payment, admin
 )
 
-app = FastAPI(title="Rest API Endpoints")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    setup_django()
+    yield
+
+
+app = FastAPI(title="Restruant API Endpoints", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,3 +34,4 @@ app.include_router(reservation.router)
 app.include_router(profile.router)
 app.include_router(review.router)
 app.include_router(payment.router)
+app.include_router(admin.router)

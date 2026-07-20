@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
-from ..models import User, UserSettings
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
+from ..services import auth_service
 
 
 def register(request):
@@ -26,35 +23,25 @@ def register(request):
             return render(request, "auth/register.html")
 
         try:
-            validate_password(password)
-        except ValidationError as e:
-            for error in e.messages:
-                messages.error(request, error)
+            auth_service.validate_registration_data(password, confirm_password)
+        except ValueError as e:
+            for msg in str(e).split("; "):
+                messages.error(request, msg)
             return render(request, "auth/register.html")
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, _("Username Already Exists"))
+        try:
+            user = auth_service.register_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                phone=phone,
+                birth=birth,
+            )
+        except ValueError as e:
+            messages.error(request, str(e))
             return render(request, "auth/register.html")
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, _("Email Already Exists"))
-            return render(request, "auth/register.html")
-
-        if password != confirm_password:
-            messages.error(request, _("Passwords do not match."))
-            return render(request, "auth/register.html")
-
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-            phone=phone,
-            birth=birth
-        )
-
-        UserSettings.objects.create(user=user)
 
         auth_login(request, user)
         messages.success(request, _("Signed up successfully"))
@@ -62,12 +49,13 @@ def register(request):
 
     return render(request, "auth/register.html")
 
+
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username", "").strip().lower()
         password = request.POST.get("password")
 
-        user = authenticate(request=request, username=username, password=password)
+        user = auth_service.authenticate_user(request=request, username=username, password=password)
 
         if user is not None:
             auth_login(request=request, user=user)
@@ -77,6 +65,7 @@ def login_view(request):
             messages.error(request, _("Invalid Username or Password"))
 
     return render(request, "auth/login.html")
+
 
 @login_required(login_url="login")
 def logout_view(request):

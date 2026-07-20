@@ -1,29 +1,31 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-import bcrypt
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-
-from .database import get_db
-from .models import User
 
 SECRET_KEY = "rest-api-jwt-secret-key-change-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 7
 
+
+def _get_user_model():
+    from django.contrib.auth import get_user_model
+    return get_user_model()
+
+
 security = HTTPBearer()
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    from django.contrib.auth.hashers import make_password
+    return make_password(password)
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
-
+    from django.contrib.auth.hashers import check_password
+    return check_password(plain, hashed)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
@@ -34,8 +36,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db),
-) -> User:
+):
     token = credentials.credentials
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -49,16 +50,27 @@ def get_current_user(
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(User.id == user_id).first()
-    if user is None:
+    User = _get_user_model()
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist:
         raise credentials_exception
-    return user
+
+
+def get_current_staff_user(
+    current_user=Depends(get_current_user),
+):
+    if not current_user.is_staff:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required",
+        )
+    return current_user
 
 
 def get_current_user_optional(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False)),
-    db: Session = Depends(get_db),
-) -> Optional[User]:
+):
     if credentials is None:
         return None
     try:
@@ -66,7 +78,7 @@ def get_current_user_optional(
         user_id: int = payload.get("user_id")
         if user_id is None:
             return None
-        user = db.query(User).filter(User.id == user_id).first()
-        return user
-    except JWTError:
+        User = _get_user_model()
+        return User.objects.get(id=user_id)
+    except (JWTError, _get_user_model().DoesNotExist):
         return None

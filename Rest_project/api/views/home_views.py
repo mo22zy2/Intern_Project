@@ -1,18 +1,14 @@
 from datetime import date
 from django.shortcuts import render
-from django.db.models import Avg
-from ..models import Menu, Category, Order, ReservationSystem
+from ..services import menu_service
+from ..models import Order, ReservationSystem
 
 
 def home(request):
-    featured_items = Menu.objects.select_related("item", "category").filter(available=True).annotate(
-        avg_rating=Avg("reviews__rating")
-    ).order_by("-popularity_score")[:4]
-
     context = {
-        "featured_items": featured_items,
-        "total_menu_items": Menu.objects.filter(available=True).count(),
-        "total_categories": Category.objects.count(),
+        "featured_items": menu_service.get_featured_items(),
+        "total_menu_items": menu_service.get_total_menu_items_count(),
+        "total_categories": menu_service.get_total_categories_count(),
     }
 
     if request.user.is_authenticated:

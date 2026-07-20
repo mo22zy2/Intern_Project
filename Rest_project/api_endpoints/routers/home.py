@@ -1,76 +1,38 @@
-from datetime import datetime, date
-from typing import Optional
+from datetime import date
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from sqlalchemy import func
 
-from ..database import get_db
-from ..models import Menu, Category, Review, Order, ReservationSystem
 from ..auth_utils import get_current_user_optional
-from ..models import User
+from api.services import menu_service
 
 router = APIRouter(tags=["Home"])
 
 
 @router.get("/")
 def home(
-    db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user_optional),
+    current_user=Depends(get_current_user_optional),
 ):
-    avg_rating_subq = (
-        db.query(Review.menu_id, func.avg(Review.rating).label("avg_rating"))
-        .group_by(Review.menu_id)
-        .subquery()
-    )
-    popular = (
-        db.query(Menu, avg_rating_subq.c.avg_rating)
-        .outerjoin(avg_rating_subq, Menu.id == avg_rating_subq.c.menu_id)
-        .filter(Menu.available == True)
-        .order_by(Menu.popularity_score.desc())
-        .limit(4)
-        .all()
-    )
-
-    categories = db.query(Category).all()
-    total_menu_items = db.query(Menu).filter(Menu.available == True).count()
-    total_categories = db.query(Category).count()
+    featured = menu_service.get_featured_items()
+    categories = menu_service.get_all_categories()
 
     result = {
-        "popular": [_menu_to_out(m, avg) for m, avg in popular],
+        "popular": [_menu_to_out(m) for m in featured],
         "categories": [{"id": c.id, "name": c.category_name} for c in categories],
-        "total_menu_items": total_menu_items,
-        "total_categories": total_categories,
+        "total_menu_items": menu_service.get_total_menu_items_count(),
+        "total_categories": menu_service.get_total_categories_count(),
     }
 
     if current_user is not None:
+        from api.models import Order, ReservationSystem
         today = date.today()
-        recent_orders = (
-            db.query(Order)
-            .filter(Order.user_id == current_user.id)
-            .order_by(Order.created_at.desc())
-            .limit(3)
-            .all()
+        recent_orders = list(
+            Order.objects.filter(user=current_user).order_by("-created_at")[:3]
         )
-        upcoming_reservations = (
-            db.query(ReservationSystem)
-            .filter(
-                ReservationSystem.user_id == current_user.id,
-                ReservationSystem.reservation_date >= today,
-                ReservationSystem.status != "cancelled",
-            )
-            .order_by(ReservationSystem.reservation_date, ReservationSystem.reservation_time)
-            .all()
-        )
-        total_orders = (
-            db.query(Order)
-            .filter(Order.user_id == current_user.id)
-            .count()
-        )
-        total_reservations = (
-            db.query(ReservationSystem)
-            .filter(ReservationSystem.user_id == current_user.id)
-            .count()
+        upcoming_reservations = list(
+            ReservationSystem.objects.filter(
+                user=current_user,
+                reservation_date__gte=today,
+            ).exclude(status="cancelled").order_by("reservation_date", "reservation_time")
         )
 
         result["recent_orders"] = [
@@ -92,24 +54,24 @@ def home(
             }
             for r in upcoming_reservations
         ]
-        result["total_orders"] = total_orders
-        result["total_reservations"] = total_reservations
+        result["total_orders"] = Order.objects.filter(user=current_user).count()
+        result["total_reservations"] = ReservationSystem.objects.filter(user=current_user).count()
 
     return result
 
 
-def _menu_to_out(m: Menu, avg_rating: Optional[float] = None) -> dict:
+def _menu_to_out(m):
     return {
         "id": m.id,
-        "item_name": m.item_ref.item_name if m.item_ref else "",
-        "category_name": m.category.category_name if m.category else "",
+        "item_name": m.item.item_name,
+        "category_name": m.category.category_name,
         "image_url": m.image_url,
         "price": m.price,
         "popularity_score": m.popularity_score,
         "available": m.available,
-        "avg_rating": round(avg_rating, 2) if avg_rating is not None else None,
+        "avg_rating": round(m.avg_rating, 2) if hasattr(m, "avg_rating") and m.avg_rating is not None else None,
         "customization_options": [
             {"id": o.id, "option_name": o.option_name, "extra_price": o.extra_price}
-            for o in m.customization_options
+            for o in m.menucustomizationoption_set.all()
         ],
     }

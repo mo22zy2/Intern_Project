@@ -1,21 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 
-from ..database import get_db
-from ..models import User, UserSettings, Review, PaymentMethod
-from ..schemas import ProfileUpdate, ChangePasswordRequest, UserOut, MessageResponse
-from ..auth_utils import get_current_user, hash_password, verify_password
+from ..schemas import ProfileUpdate, ChangePasswordRequest, MessageResponse
+from ..auth_utils import get_current_user
+from api.services import profile_service, auth_service
 
 router = APIRouter(prefix="/profile", tags=["Profile"])
 
 
 @router.get("/")
-def profile(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    settings = db.query(UserSettings).filter(UserSettings.user_id == user.id).first()
-    reviews = db.query(Review).filter(Review.user_id == user.id).order_by(Review.created_at.desc()).all()
-    payment_methods = db.query(PaymentMethod).filter(PaymentMethod.user_id == user.id).all()
+def profile(user=Depends(get_current_user)):
+    from api.models import Review, PaymentMethod
+    data = profile_service.get_profile_data(user)
+    settings = data["settings"]
+    reviews = Review.objects.filter(user=user).order_by("-created_at")
+    payment_methods = PaymentMethod.objects.filter(user=user)
     return {
         "id": user.id,
         "username": user.username,
@@ -25,8 +23,8 @@ def profile(user=Depends(get_current_user), db: Session = Depends(get_db)):
         "phone": user.phone,
         "birth": user.birth.isoformat() if user.birth else None,
         "settings": {
-            "dark_mode": settings.dark_mode if settings else False,
-            "locale": settings.locale if settings else "en",
+            "dark_mode": settings.dark_mode,
+            "locale": settings.locale,
         },
         "reviews": [
             {
@@ -49,31 +47,20 @@ def profile(user=Depends(get_current_user), db: Session = Depends(get_db)):
 def edit_profile(
     body: ProfileUpdate,
     user=Depends(get_current_user),
-    db: Session = Depends(get_db),
 ):
-    if body.email is not None:
-        existing = db.query(User).filter(User.email == body.email, User.id != user.id).first()
-        if existing:
-            raise HTTPException(status_code=400, detail="Email already in use")
-        user.email = body.email
-    if body.first_name is not None:
-        user.first_name = body.first_name
-    if body.last_name is not None:
-        user.last_name = body.last_name
-    if body.phone is not None:
-        user.phone = body.phone
-    if body.birth is not None:
-        user.birth = body.birth
-    if body.dark_mode is not None or body.locale is not None:
-        settings = db.query(UserSettings).filter(UserSettings.user_id == user.id).first()
-        if not settings:
-            settings = UserSettings(user_id=user.id)
-            db.add(settings)
-        if body.dark_mode is not None:
-            settings.dark_mode = body.dark_mode
-        if body.locale is not None:
-            settings.locale = body.locale
-    db.commit()
+    try:
+        profile_service.update_profile(
+            user=user,
+            first_name=body.first_name,
+            last_name=body.last_name,
+            email=body.email,
+            phone=body.phone,
+            birth=body.birth,
+            dark_mode=body.dark_mode,
+            locale=body.locale,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     return MessageResponse(message="Profile updated successfully")
 
 
@@ -81,16 +68,14 @@ def edit_profile(
 def change_password(
     body: ChangePasswordRequest,
     user=Depends(get_current_user),
-    db: Session = Depends(get_db),
 ):
-    if not verify_password(body.old_password, user.password):
-        raise HTTPException(status_code=400, detail="Current password is incorrect")
-    if body.new_password != body.confirm_password:
-        raise HTTPException(status_code=400, detail="New passwords do not match")
     try:
-        validate_password(body.new_password)
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail="; ".join(e.messages))
-    user.password = hash_password(body.new_password)
-    db.commit()
+        auth_service.change_password(
+            user,
+            body.old_password,
+            body.new_password,
+            body.confirm_password,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     return MessageResponse(message="Password changed successfully")

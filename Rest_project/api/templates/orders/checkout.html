@@ -63,8 +63,7 @@
 
         <div id="delivery-section">
             <h3>Delivery Address</h3>
-            <textarea name="delivery_address" placeholder="Enter your full delivery address" class="form-input" rows="3"
-                required></textarea>
+            <textarea name="delivery_address" placeholder="Enter your full delivery address" class="form-input" rows="3"></textarea>
         </div>
 
         <div id="dinein-section" style="display:none">
@@ -72,16 +71,20 @@
             <div class="reservation-form">
                 <label>
                     Date
-                    <input type="date" name="reservation_date" class="form-input" required>
+                    <input type="date" name="reservation_date" class="form-input">
                 </label>
                 <label>
                     Time
-                    <input type="time" name="reservation_time" class="form-input" required>
+                    <input type="time" name="reservation_time" class="form-input">
                 </label>
                 <label>
                     Number of Seats
-                    <input type="number" name="seats" value="1" min="1" class="form-input" required>
+                    <input type="number" name="seats" value="1" min="1" class="form-input">
                 </label>
+            </div>
+            <div class="working-hours">
+                <h4>Restaurant Working Hours</h4>
+                <p>Daily: 10:00 AM – 4:00 AM</p>
             </div>
         </div>
 
@@ -107,11 +110,11 @@
         </div>
 
         <div id="card-payment-section" style="display:none">
-            {% if payment_methods %}
+            {% if card_methods %}
             <div class="payment-list">
-                {% for pm in payment_methods %}
+                {% for pm in card_methods %}
                 <label class="payment-option">
-                    <input type="radio" name="payment_method_id" value="{{ pm.id }}" {% if pm.is_default %}checked{%endif %}>
+                    <input type="radio" name="payment_method_id" value="{{ pm.id }}" {% if pm.is_default %}checked{% endif %}>
                     💳 {{ pm.method_type }}
                 </label>
                 {% endfor %}
@@ -149,6 +152,23 @@
 
         document.getElementById('dinein-section').style.display =
             type === 'dine_in' ? 'block' : 'none';
+
+        var addrInput = document.querySelector('[name="delivery_address"]');
+        var dateInput = document.querySelector('[name="reservation_date"]');
+        var timeInput = document.querySelector('[name="reservation_time"]');
+        var seatsInput = document.querySelector('[name="seats"]');
+
+        if (type === 'delivery') {
+            addrInput.required = true;
+            dateInput.required = false;
+            timeInput.required = false;
+            seatsInput.required = false;
+        } else {
+            addrInput.required = false;
+            dateInput.required = true;
+            timeInput.required = true;
+            seatsInput.required = true;
+        }
 
         const cashTitle = document.getElementById('cash-payment-title');
         const cashDesc = document.getElementById('cash-payment-description');

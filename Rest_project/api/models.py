@@ -6,6 +6,8 @@ class User(AbstractUser):
     phone = models.CharField(max_length=15, blank=True)
     birth = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
+    telegram_verification_code = models.CharField(max_length=100, blank=True, null=True)
 
 
 class UserSettings(models.Model):
@@ -66,7 +68,7 @@ class Order(models.Model):
     delivery_type = models.CharField(max_length=20, default="delivery")
     delivery_address = models.TextField(blank=True, default="")
     reservation = models.ForeignKey("ReservationSystem", on_delete=models.SET_NULL, null=True, blank=True)
-    status = models.CharField(max_length=20, default="confirmed")
+    status = models.CharField(max_length=20, default="pending")
     total_price = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     qr_data = models.TextField(blank=True, null=True)
@@ -86,12 +88,13 @@ class OrderItem(models.Model):
     options_text = models.CharField(max_length=500, blank=True, default="")
 
 
+
 class ReservationSystem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reservation_date = models.DateField()
     reservation_time = models.TimeField()
     seats = models.IntegerField()
-    status = models.CharField(max_length=20, default="confirmed")
+    status = models.CharField(max_length=20, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -118,3 +121,27 @@ class Payment(models.Model):
     amount = models.FloatField()
     status = models.CharField(max_length=20, default="pending")
     paid_at = models.DateTimeField(null=True, blank=True)
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ("order_confirmed", "Order Confirmed"),
+        ("reservation_confirmed", "Reservation Confirmed"),
+        ("new_order_pending", "New Order Pending"),
+        ("low_inventory", "Low Inventory"),
+        ("new_review", "New Review"),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
+    notification_type = models.CharField(max_length=50, choices=NOTIFICATION_TYPES)
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    related_order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    related_reservation = models.ForeignKey(ReservationSystem, on_delete=models.SET_NULL, null=True, blank=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"[{self.notification_type}] {self.user.username} - {self.title}"

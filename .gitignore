@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 staticfiles/
 .DS_Store
+ERRORS.md
+*.md
+drop_test_db.py
+frontend/

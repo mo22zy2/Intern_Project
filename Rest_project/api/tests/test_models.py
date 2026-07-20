@@ -267,7 +267,7 @@ class OrderModelTest(TestCase):
 
     def test_order_creation(self):
         self.assertEqual(self.order.total_price, 31.98)
-        self.assertEqual(self.order.status, "confirmed")
+        self.assertEqual(self.order.status, "pending")
         self.assertEqual(self.order.user, self.user)
 
     def test_order_default_delivery_type(self):
@@ -345,7 +345,7 @@ class ReservationSystemModelTest(TestCase):
         self.assertIsNotNone(self.reservation.reservation_time)
 
     def test_reservation_default_status(self):
-        self.assertEqual(self.reservation.status, "confirmed")
+        self.assertEqual(self.reservation.status, "pending")
 
     def test_reservation_created_at_auto(self):
         self.assertIsNotNone(self.reservation.created_at)

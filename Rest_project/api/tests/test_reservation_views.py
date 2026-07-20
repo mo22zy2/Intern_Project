@@ -65,7 +65,7 @@ class TestMakeReservation(TestCase):
         self.assertEqual(ReservationSystem.objects.count(), 1)
         reservation = ReservationSystem.objects.first()
         self.assertEqual(reservation.seats, 4)
-        self.assertEqual(reservation.status, "confirmed")
+        self.assertEqual(reservation.status, "pending")
         self.assertEqual(reservation.user, self.user)
 
     def test_make_reservation_past_date_rejected(self):

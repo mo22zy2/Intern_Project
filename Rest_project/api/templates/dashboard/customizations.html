@@ -1,0 +1,49 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+
+{% block admin_content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h1 style="margin-bottom:0;">{% trans "Customizations" %} — {{ menu.item.item_name }}</h1>
+    <a href="{% url 'admin_menu_list' %}" class="btn btn-sm">← {% trans "Back to Menu" %}</a>
+</div>
+
+<div class="admin-form-card" style="margin-bottom:24px;">
+    <h3 style="font-size:14px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">{% trans "Add Option" %}</h3>
+    <form method="POST" action="{% url 'admin_customization_add' menu.id %}">
+        {% csrf_token %}
+        <label>{% trans "Option Name" %}</label>
+        <input type="text" name="option_name" required class="form-input">
+        <label>{% trans "Extra Price (EGP)" %}</label>
+        <input type="number" name="extra_price" value="0" step="0.01" min="0" class="form-input">
+        <button type="submit" class="btn btn-sm btn-success" style="margin-top:4px;">+ {% trans "Add" %}</button>
+    </form>
+</div>
+
+{% if options %}
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>{% trans "Option" %}</th>
+            <th>{% trans "Extra Price" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for opt in options %}
+        <tr>
+            <td>{{ opt.option_name }}</td>
+            <td>EGP{{ opt.extra_price|floatformat:2 }}</td>
+            <td>
+                <form method="POST" action="{% url 'admin_customization_delete' opt.id %}" onsubmit="return confirm('{% trans "Delete this option?" %}')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">{% trans "Delete" %}</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>{% trans "No customizations for this item." %}</p>
+{% endif %}
+{% endblock %}

@@ -237,6 +237,38 @@ class PaymentOut(BaseModel):
         from_attributes = True
 
 
+# ----- Admin -----
+class CategoryCreate(BaseModel):
+    category_name: str
+
+
+class MenuItemCreate(BaseModel):
+    item_name: str
+    category_id: int
+    price: float
+    image_url: str = ""
+    available: bool = True
+    stock_count: int = 0
+
+
+class CustomizationCreate(BaseModel):
+    option_name: str
+    extra_price: float = 0
+
+
+class StatusUpdate(BaseModel):
+    status: str
+
+
+class InventoryUpdate(BaseModel):
+    item_count: int = Field(ge=0)
+
+
+class ReportQuery(BaseModel):
+    type: str = "sales"
+    days: int = 30
+
+
 # ----- Generic -----
 class MessageResponse(BaseModel):
     message: str

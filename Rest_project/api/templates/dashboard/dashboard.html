@@ -1,0 +1,165 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+
+{% block admin_content %}
+<h1>{% trans "Dashboard" %}</h1>
+
+<div class="admin-stat-grid">
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.total_users }}</div>
+        <div class="stat-label">{% trans "Total Users" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.total_orders }}</div>
+        <div class="stat-label">{% trans "Total Orders" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">EGP{{ stats.total_revenue|floatformat:0 }}</div>
+        <div class="stat-label">{% trans "Total Revenue" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.total_menu_items }}</div>
+        <div class="stat-label">{% trans "Menu Items" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.total_reservations }}</div>
+        <div class="stat-label">{% trans "Reservations" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.low_stock }}</div>
+        <div class="stat-label">{% trans "Low Stock Items" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">{{ stats.orders_today }}</div>
+        <div class="stat-label">{% trans "Orders Today" %}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="stat-value">EGP{{ stats.revenue_today|floatformat:0 }}</div>
+        <div class="stat-label">{% trans "Revenue Today" %}</div>
+    </div>
+</div>
+
+<div class="chart-grid">
+    <div class="chart-card">
+        <h3>{% trans "Revenue — Daily Trend (Last 30 Days)" %}</h3>
+        <div class="bar-chart">
+            {% for r in line_data %}
+            <div class="bar" style="height: {{ r.pct }}%;" title="{{ r.date }}: EGP{{ r.total|floatformat:0 }}"></div>
+            {% endfor %}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;">
+            <span>{{ line_data.0.date|default:"" }}</span>
+            <span>{{ line_data.29.date|default:"" }}</span>
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>{% trans "Order Status" %}</h3>
+        <div class="donut" style="background: conic-gradient(
+            {% for seg in donut_segments %}
+            {{ seg.color }} {{ seg.offset }}% {{ seg.offset|add:seg.pct }}%{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        );"></div>
+        <div class="donut-legend">
+            {% for seg in donut_segments %}
+            <div class="donut-legend-item">
+                <span class="dot" style="background:{{ seg.color }}"></span>
+                {{ seg.label }} ({{ seg.count }})
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="chart-grid">
+    <div class="chart-card">
+        <h3>{% trans "User Demographics" %}</h3>
+        <div class="donut" style="background: conic-gradient(
+            {% for seg in user_segments %}
+            {{ seg.color }} {{ seg.offset }}% {{ seg.offset|add:seg.pct }}%{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        );"></div>
+        <div class="donut-legend">
+            {% for seg in user_segments %}
+            <div class="donut-legend-item">
+                <span class="dot" style="background:{{ seg.color }}"></span>
+                {{ seg.label }} ({{ seg.count }})
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="chart-card">
+        <h3>{% trans "User Activity" %}</h3>
+        <div class="admin-stat-grid" style="grid-template-columns:1fr 1fr;margin-bottom:0;">
+            <div class="admin-stat-card" style="padding:16px;">
+                <div class="stat-value" style="font-size:24px;">{{ demographics.total_users }}</div>
+                <div class="stat-label">{% trans "Total Users" %}</div>
+            </div>
+            <div class="admin-stat-card" style="padding:16px;">
+                <div class="stat-value" style="font-size:24px;">{{ demographics.active_count }}</div>
+                <div class="stat-label">{% trans "Active Users" %}</div>
+            </div>
+            <div class="admin-stat-card" style="padding:16px;">
+                <div class="stat-value" style="font-size:24px;">{{ demographics.staff_count }}</div>
+                <div class="stat-label">{% trans "Staff" %}</div>
+            </div>
+            <div class="admin-stat-card" style="padding:16px;">
+                <div class="stat-value" style="font-size:24px;">{{ demographics.regular_count }}</div>
+                <div class="stat-label">{% trans "Regular Users" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="chart-grid">
+    <div class="chart-card">
+        <h3>{% trans "Top Selling Items" %}</h3>
+        {% if top_items %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Item" %}</th>
+                    <th>{% trans "Ordered" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in top_items %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.ordered }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:rgba(255,255,255,.4);">{% trans "No data yet." %}</p>
+        {% endif %}
+    </div>
+    <div class="chart-card">
+        <h3>{% trans "Recent Orders" %}</h3>
+        {% if recent_orders %}
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans "User" %}</th>
+                    <th>{% trans "Total" %}</th>
+                    <th>{% trans "Status" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>EGP{{ order.total_price|floatformat:2 }}</td>
+                    <td><span class="status-badge {{ order.status }}">{{ order.status|title }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:rgba(255,255,255,.4);">{% trans "No orders yet." %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

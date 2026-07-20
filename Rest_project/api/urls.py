@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import auth_views, home_views, menu_views, cart_views, order_views, reservation_views, profile_views, review_views, payment_views
+from .views import auth_views, home_views, menu_views, cart_views, order_views, reservation_views, profile_views, review_views, payment_views, admin_views, telegram_views
 
 urlpatterns = [
     path("", home_views.home, name="home"),
@@ -32,4 +32,28 @@ urlpatterns = [
     path("payment-methods/add/", payment_views.add_payment_method, name="add_payment_method"),
     path("payment-methods/<int:method_id>/delete/", payment_views.delete_payment_method, name="delete_payment_method"),
     path("payment-methods/<int:method_id>/default/", payment_views.set_default_payment_method, name="set_default_payment_method"),
+    path("dashboard/", admin_views.admin_dashboard, name="admin_dashboard"),
+    path("dashboard/orders/", admin_views.admin_orders, name="admin_orders"),
+    path("dashboard/orders/<int:order_id>/update/", admin_views.admin_update_order, name="admin_update_order"),
+    path("dashboard/reservations/", admin_views.admin_reservations, name="admin_reservations"),
+    path("dashboard/reservations/<int:reservation_id>/update/", admin_views.admin_update_reservation, name="admin_update_reservation"),
+    path("dashboard/menu/", admin_views.admin_menu_list, name="admin_menu_list"),
+    path("dashboard/menu/add/", admin_views.admin_menu_add, name="admin_menu_add"),
+    path("dashboard/menu/<int:item_id>/delete/", admin_views.admin_menu_delete, name="admin_menu_delete"),
+    path("dashboard/menu/<int:item_id>/toggle/", admin_views.admin_menu_toggle, name="admin_menu_toggle"),
+    path("dashboard/inventory/", admin_views.admin_inventory, name="admin_inventory"),
+    path("dashboard/categories/", admin_views.admin_categories, name="admin_categories"),
+    path("dashboard/categories/add/", admin_views.admin_category_add, name="admin_category_add"),
+    path("dashboard/categories/<int:category_id>/edit/", admin_views.admin_category_edit, name="admin_category_edit"),
+    path("dashboard/categories/<int:category_id>/delete/", admin_views.admin_category_delete, name="admin_category_delete"),
+    path("dashboard/menu/<int:menu_id>/customizations/", admin_views.admin_customizations, name="admin_customizations"),
+    path("dashboard/menu/<int:menu_id>/customizations/add/", admin_views.admin_customization_add, name="admin_customization_add"),
+    path("dashboard/customizations/<int:customization_id>/delete/", admin_views.admin_customization_delete, name="admin_customization_delete"),
+    path("dashboard/users/", admin_views.admin_users, name="admin_users"),
+    path("dashboard/users/<int:user_id>/toggle-staff/", admin_views.admin_toggle_staff, name="admin_toggle_staff"),
+    path("dashboard/users/<int:user_id>/toggle-active/", admin_views.admin_toggle_active, name="admin_toggle_active"),
+    path("dashboard/reports/", admin_views.admin_reports, name="admin_reports"),
+    path("telegram-webhook/", telegram_views.telegram_webhook, name="telegram_webhook"),
+    path("profile/telegram/connect/", telegram_views.connect_telegram, name="connect_telegram"),
+    path("profile/telegram/disconnect/", telegram_views.disconnect_telegram, name="disconnect_telegram"),
 ]

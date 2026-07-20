@@ -51,6 +51,10 @@
 
                 <li><a href="{% url 'my_reservations' %}">{% trans "Reservations" %}</a></li>
 
+                {% if user.is_staff %}
+                <li><a href="{% url 'admin_dashboard' %}">{% trans "Dashboard" %}</a></li>
+                {% endif %}
+
                 <li class="nav-dropdown">
                     <button class="nav-dropdown-toggle">
                         <span class="nav-avatar">{{ user.first_name|default:user.username|first|upper }}</span>

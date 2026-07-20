@@ -1,0 +1,46 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+
+{% block admin_content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h1 style="margin-bottom:0;">{% trans "Categories" %}</h1>
+    <form method="POST" action="{% url 'admin_category_add' %}" class="actions" style="gap:8px;">
+        {% csrf_token %}
+        <input type="text" name="category_name" placeholder="{% trans 'Category name' %}" required class="form-input" style="width:200px;padding:6px 10px;font-size:13px;">
+        <button type="submit" class="btn btn-sm btn-success">+ {% trans "Add" %}</button>
+    </form>
+</div>
+
+{% if categories %}
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cat in categories %}
+        <tr>
+            <td>{{ cat.category_name }}</td>
+            <td>
+                <div class="actions">
+                    <form method="POST" action="{% url 'admin_category_edit' cat.id %}" class="actions" style="gap:4px;">
+                        {% csrf_token %}
+                        <input type="text" name="category_name" value="{{ cat.category_name }}" required class="form-input" style="width:150px;padding:4px 8px;font-size:13px;">
+                        <button type="submit" class="btn btn-sm btn-warning">{% trans "Rename" %}</button>
+                    </form>
+                    <form method="POST" action="{% url 'admin_category_delete' cat.id %}" onsubmit="return confirm('{% trans "Delete this category?" %}')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">{% trans "Delete" %}</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>{% trans "No categories yet." %}</p>
+{% endif %}
+{% endblock %}

@@ -1,17 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import PaymentMethod, Payment, Order
-from ..schemas import PaymentMethodCreate, PaymentMethodOut, PaymentOut, MessageResponse
+from ..schemas import PaymentMethodCreate, MessageResponse
 from ..auth_utils import get_current_user
+from api.services import payment_service
 
 router = APIRouter(prefix="/payment-methods", tags=["Payment Methods"])
 
 
 @router.get("/")
-def payment_methods(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    methods = db.query(PaymentMethod).filter(PaymentMethod.user_id == user.id).all()
+def payment_methods(user=Depends(get_current_user)):
+    methods = payment_service.get_user_payment_methods(user)
     return [
         {"id": m.id, "method_type": m.method_type, "is_default": m.is_default}
         for m in methods
@@ -22,24 +20,11 @@ def payment_methods(user=Depends(get_current_user), db: Session = Depends(get_db
 def add_payment_method(
     body: PaymentMethodCreate,
     user=Depends(get_current_user),
-    db: Session = Depends(get_db),
 ):
-    digits = "".join(c for c in body.card_number if c.isdigit())
-    if len(digits) < 13:
-        raise HTTPException(status_code=400, detail="Invalid card number")
-    last_four = digits[-4:]
-    method_type = f"\u2022\u2022\u2022\u2022 {last_four}"
-
-    if body.is_default:
-        db.query(PaymentMethod).filter(PaymentMethod.user_id == user.id).update({"is_default": False})
-
-    method = PaymentMethod(
-        user_id=user.id,
-        method_type=method_type,
-        is_default=body.is_default or not db.query(PaymentMethod).filter(PaymentMethod.user_id == user.id).first(),
-    )
-    db.add(method)
-    db.commit()
+    try:
+        payment_service.add_payment_method(user, body.card_number, body.is_default)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     return MessageResponse(message="Card saved successfully")
 
 
@@ -47,17 +32,12 @@ def add_payment_method(
 def delete_payment_method(
     method_id: int,
     user=Depends(get_current_user),
-    db: Session = Depends(get_db),
 ):
-    method = (
-        db.query(PaymentMethod)
-        .filter(PaymentMethod.id == method_id, PaymentMethod.user_id == user.id)
-        .first()
-    )
-    if not method:
+    try:
+        payment_service.delete_payment_method(user, method_id)
+    except Exception:
+        from api.models import PaymentMethod
         raise HTTPException(status_code=404, detail="Payment method not found")
-    db.delete(method)
-    db.commit()
     return MessageResponse(message="Payment method deleted successfully")
 
 
@@ -65,32 +45,18 @@ def delete_payment_method(
 def set_default_payment_method(
     method_id: int,
     user=Depends(get_current_user),
-    db: Session = Depends(get_db),
 ):
-    method = (
-        db.query(PaymentMethod)
-        .filter(PaymentMethod.id == method_id, PaymentMethod.user_id == user.id)
-        .first()
-    )
-    if not method:
-        raise HTTPException(status_code=404, detail="Payment method not found")
-
-    db.query(PaymentMethod).filter(PaymentMethod.user_id == user.id).update({"is_default": False})
-    method.is_default = True
-    db.commit()
+    try:
+        payment_service.set_default_payment_method(user, method_id)
+    except Exception:
+        from api.models import PaymentMethod
+        raise HTTPException(status_code=400, detail="Payment method not found")
     return MessageResponse(message="Default payment method updated")
 
 
-# Payment endpoints
 @router.get("/payments")
-def payment_history(user=Depends(get_current_user), db: Session = Depends(get_db)):
-    payments = (
-        db.query(Payment)
-        .join(Order)
-        .filter(Order.user_id == user.id)
-        .order_by(Payment.paid_at.desc())
-        .all()
-    )
+def payment_history(user=Depends(get_current_user)):
+    payments = payment_service.get_user_payments(user)
     return [
         {
             "id": p.id,

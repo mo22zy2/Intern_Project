@@ -1,0 +1,64 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+
+{% block admin_content %}
+<h1>{% trans "Users" %}</h1>
+
+{% if users %}
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>{% trans "ID" %}</th>
+            <th>{% trans "Username" %}</th>
+            <th>{% trans "Email" %}</th>
+            <th>{% trans "Joined" %}</th>
+            <th>{% trans "Role" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.email|default:"—" }}</td>
+            <td>{{ u.date_joined|date:"M d, Y" }}</td>
+            <td>
+                {% if u.is_staff %}
+                <span class="status-badge confirmed">{% trans "Staff" %}</span>
+                {% else %}
+                <span style="color:rgba(255,255,255,.4);">{% trans "Regular" %}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if u.is_active %}
+                <span class="status-badge confirmed">{% trans "Active" %}</span>
+                {% else %}
+                <span class="status-badge cancelled">{% trans "Banned" %}</span>
+                {% endif %}
+            </td>
+            <td>
+                <div class="actions">
+                    <form method="POST" action="{% url 'admin_toggle_staff' u.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning">
+                            {% if u.is_staff %}{% trans "Remove Staff" %}{% else %}{% trans "Make Staff" %}{% endif %}
+                        </button>
+                    </form>
+                    <form method="POST" action="{% url 'admin_toggle_active' u.id %}" onsubmit="return confirm('{% if u.is_active %}{% trans "Ban this user?" %}{% else %}{% trans "Restore this user?" %}{% endif %}')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if u.is_active %}btn-danger{% else %}btn-success{% endif %}">
+                            {% if u.is_active %}{% trans "Ban" %}{% else %}{% trans "Restore" %}{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>{% trans "No users found." %}</p>
+{% endif %}
+{% endblock %}

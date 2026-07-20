@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import User, UserSettings, Category, Inventory, Menu, \
     MenuCustomizationOption, Cart, CartItem, Order, OrderItem, \
-    ReservationSystem, PaymentMethod, Payment
+    ReservationSystem, PaymentMethod, Payment, Notification
 
 admin.site.register(User)
 admin.site.register(UserSettings)
@@ -16,3 +16,4 @@ admin.site.register(OrderItem)
 admin.site.register(ReservationSystem)
 admin.site.register(PaymentMethod)
 admin.site.register(Payment)
+admin.site.register(Notification)
