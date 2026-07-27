@@ -4,6 +4,20 @@ from ..schemas import PlaceOrderRequest, MessageResponse
 from ..auth_utils import get_current_user
 from api.services import order_service
 
+
+def _sync_cart_from_items(user, items):
+    from api.models import Cart, CartItem, Menu
+    cart, _ = Cart.objects.get_or_create(user=user)
+    CartItem.objects.filter(cart=cart).delete()
+    for item in items:
+        menu = Menu.objects.get(id=item.menu_id)
+        CartItem.objects.create(
+            cart=cart,
+            menu=menu,
+            quantity=item.quantity,
+            options_text=item.options_text or "",
+        )
+
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
@@ -38,10 +52,13 @@ def place_order(
     user=Depends(get_current_user),
 ):
     try:
+        _sync_cart_from_items(user, body.items)
         order_service.place_order(
             user=user,
             delivery_type=body.delivery_type,
             delivery_address=body.delivery_address.strip() if body.delivery_address else "",
+            pickup_date=body.pickup_date,
+            pickup_time=body.pickup_time,
             reservation_date=str(body.reservation_date) if body.reservation_date else None,
             reservation_time=str(body.reservation_time) if body.reservation_time else None,
             seats=body.seats,
@@ -49,6 +66,9 @@ def place_order(
             payment_method_id=body.payment_method_id,
             card_number=body.card_number.strip() if body.card_number else None,
         )
+        if body.save_address and body.delivery_address:
+            user.address = body.delivery_address.strip()
+            user.save(update_fields=["address"])
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -84,6 +104,7 @@ def _order_to_out(o):
         "user_id": o.user_id,
         "delivery_type": o.delivery_type,
         "delivery_address": o.delivery_address,
+        "order_number": o.order_number,
         "status": o.status,
         "total_price": o.total_price,
         "created_at": o.created_at.isoformat() if o.created_at else None,

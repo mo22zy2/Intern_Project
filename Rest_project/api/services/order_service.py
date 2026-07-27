@@ -45,6 +45,8 @@ def place_order(
     user,
     delivery_type,
     delivery_address="",
+    pickup_date=None,
+    pickup_time=None,
     reservation_date=None,
     reservation_time=None,
     seats=None,
@@ -70,7 +72,7 @@ def place_order(
     if delivery_type == "delivery":
         if not delivery_address:
             raise ValueError("Please enter a delivery address")
-    else:
+    elif delivery_type == "dine-in":
         parsed_date, parsed_time, parsed_seats = reservation_service.validate_reservation_input(
             str(reservation_date) if reservation_date else "",
             str(reservation_time) if reservation_time else "",
@@ -83,16 +85,24 @@ def place_order(
             seats=parsed_seats,
             status="pending",
         )
+    elif delivery_type == "pickup":
+        if not pickup_date:
+            raise ValueError("Please select a pickup date")
 
     total_price = 0
     for cartitem in items:
         total_price += _calculate_item_price(cartitem) * cartitem.quantity
 
+    order_number = Order.objects.filter(user=user).count() + 1
+
     order = Order.objects.create(
         user=user,
         delivery_type=delivery_type,
         delivery_address=delivery_address,
+        pickup_date=pickup_date,
+        pickup_time=pickup_time,
         reservation=reservation,
+        order_number=order_number,
         status="pending",
         total_price=total_price,
     )

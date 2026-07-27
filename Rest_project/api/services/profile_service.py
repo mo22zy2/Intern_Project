@@ -1,3 +1,6 @@
+from datetime import date
+
+
 def _imports():
     from ..models import User, UserSettings
     return User, UserSettings
@@ -12,11 +15,14 @@ def get_profile_data(user):
     }
 
 
-def update_profile(user, first_name=None, last_name=None, email=None, phone=None, birth=None, dark_mode=None, locale=None):
+def update_profile(user, first_name=None, last_name=None, email=None, phone=None, birth=None, address=None, dark_mode=None, locale=None):
     User, UserSettings = _imports()
     if email is not None and email != user.email:
         if User.objects.filter(email=email).exists():
-            raise ValueError("Email already in use")
+            raise ValueError("This email is already in use.")
+
+    if birth is not None and birth > date.today():
+        raise ValueError("Birth date cannot be in the future.")
 
     settings, _ = UserSettings.objects.get_or_create(user=user)
 
@@ -30,6 +36,8 @@ def update_profile(user, first_name=None, last_name=None, email=None, phone=None
         user.phone = phone
     if birth is not None:
         user.birth = birth
+    if address is not None:
+        user.address = address
     user.save()
 
     if dark_mode is not None:

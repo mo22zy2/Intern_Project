@@ -22,6 +22,7 @@ def profile(user=Depends(get_current_user)):
         "last_name": user.last_name,
         "phone": user.phone,
         "birth": user.birth.isoformat() if user.birth else None,
+        "address": user.address,
         "settings": {
             "dark_mode": settings.dark_mode,
             "locale": settings.locale,
@@ -56,6 +57,7 @@ def edit_profile(
             email=body.email,
             phone=body.phone,
             birth=body.birth,
+            address=body.address,
             dark_mode=body.dark_mode,
             locale=body.locale,
         )

@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     phone = models.CharField(max_length=15, blank=True)
     birth = models.DateField(null=True, blank=True)
+    address = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     telegram_chat_id = models.CharField(max_length=50, blank=True, null=True)
     telegram_verification_code = models.CharField(max_length=100, blank=True, null=True)
@@ -67,7 +68,10 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_type = models.CharField(max_length=20, default="delivery")
     delivery_address = models.TextField(blank=True, default="")
+    pickup_date = models.DateField(null=True, blank=True)
+    pickup_time = models.TimeField(null=True, blank=True)
     reservation = models.ForeignKey("ReservationSystem", on_delete=models.SET_NULL, null=True, blank=True)
+    order_number = models.IntegerField(default=0)
     status = models.CharField(max_length=20, default="pending")
     total_price = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)

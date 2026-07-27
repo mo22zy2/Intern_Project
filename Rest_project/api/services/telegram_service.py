@@ -124,7 +124,7 @@ def send_new_review_to_staff(review):
         f"\U0001F4AC <b>New Review</b>\n\n"
         f"User: {review.user.first_name or review.user.username}\n"
         f"Item: {review.menu.item.item_name}\n"
-        f"Rating: {'\u2B50' * review.rating} ({review.rating}/5)\n"
+        f"Rating: {chr(11088) * review.rating} ({review.rating}/5)\n"
         f"Comment: {review.comment or '(no comment)'}"
     )
     _notify_all_staff(text)

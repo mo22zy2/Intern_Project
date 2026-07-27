@@ -60,6 +60,7 @@ def menu_detail(
     result = _menu_to_out(item, avg_rating=avg_rating)
     result["reviews"] = [
         {
+            "id": r.id,
             "username": r.user.username,
             "rating": r.rating,
             "comment": r.comment,
@@ -69,6 +70,7 @@ def menu_detail(
     ]
     result["user_review"] = (
         {
+            "id": user_review_obj.id,
             "rating": user_review_obj.rating,
             "comment": user_review_obj.comment,
             "created_at": user_review_obj.created_at.isoformat(),

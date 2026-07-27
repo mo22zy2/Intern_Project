@@ -36,6 +36,7 @@ class UserOut(BaseModel):
     last_name: str
     phone: str
     birth: Optional[date] = None
+    address: str = ""
 
     class Config:
         from_attributes = True
@@ -47,6 +48,7 @@ class ProfileUpdate(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
     birth: Optional[date] = None
+    address: Optional[str] = None
     dark_mode: Optional[bool] = None
     locale: Optional[str] = None
 
@@ -127,6 +129,8 @@ class OrderItemCreate(BaseModel):
 class PlaceOrderRequest(BaseModel):
     delivery_type: str = "delivery"
     delivery_address: str = ""
+    pickup_date: Optional[date] = None
+    pickup_time: Optional[time] = None
     reservation_id: Optional[int] = None
     reservation_date: Optional[date] = None
     reservation_time: Optional[time] = None
@@ -135,6 +139,7 @@ class PlaceOrderRequest(BaseModel):
     payment_type: str = "card"
     payment_method_id: Optional[int] = None
     card_number: Optional[str] = None
+    save_address: bool = False
 
 
 class OrderItemOut(BaseModel):
@@ -154,6 +159,7 @@ class OrderOut(BaseModel):
     user_id: int
     delivery_type: str
     delivery_address: str
+    order_number: int = 0
     status: str
     total_price: float
     created_at: datetime
