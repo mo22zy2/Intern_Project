@@ -35,6 +35,7 @@ A full-stack restaurant management application with a **Django** (session-based 
 | Auth (Django) | Session-based, bcrypt password hashing |
 | Auth (FastAPI) | JWT (python-jose), bcrypt |
 | Frontend | HTML templates + Flutter mobile app |
+| RAG Chatbot | pgvector (PostgreSQL embeddings) + Qdrant vector DB |
 | Other | QR codes, Pillow, Arabic l10n (polib) |
 
 ## Features
@@ -50,6 +51,16 @@ A full-stack restaurant management application with a **Django** (session-based 
 | **Profile** | Edit profile, settings, password change | Same via JSON |
 | **Review** | Create, edit, delete reviews | Same via JSON |
 | **Payment** | Add/list payment methods, card masking | Same via JSON |
+| **Chat** | RAG chatbot widget (`CHAT_API_URL`) | Same via JSON |
+
+## RAG Chatbot
+
+The project integrates a **mini RAG (Retrieval-Augmented Generation) chatbot** that answers questions about the restaurant (menu items, ordering, reservations, and more) using the project data as its knowledge base.
+
+- Built with **pgvector** — PostgreSQL extension used to store and search the embeddings of the restaurant knowledge base with vector similarity
+- Uses **Qdrant** — a dedicated vector database for fast, scalable similarity retrieval
+- Retrieves the most relevant documents for a question, then generates a grounded answer from the retrieved context
+- Wired into the Django frontend through the `CHAT_API_URL` environment variable (default: `http://localhost:8000/api/v1/nlp/index/answer/1`), injected into templates via the `chat_api_url` context processor
 
 ## Setup
 
