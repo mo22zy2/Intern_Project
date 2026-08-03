@@ -1,7 +1,7 @@
 class Endpoints {
   Endpoints._();
 
-  static const String baseUrl = "http://localhost:8000";
+  static const String baseUrl = "http://localhost:8071";
 
   static const String login = "/auth/login";
   static const String register = "/auth/register";

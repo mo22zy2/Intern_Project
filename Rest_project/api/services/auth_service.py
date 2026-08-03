@@ -1,5 +1,5 @@
 import random
-from datetime import date
+from datetime import date, datetime
 
 
 def _imports():
@@ -8,6 +8,19 @@ def _imports():
     from django.core.exceptions import ValidationError
     from ..models import User, UserSettings
     return authenticate, validate_password, ValidationError, User, UserSettings
+
+
+def _parse_birth(birth):
+    if birth is None or birth == "":
+        return None
+    if isinstance(birth, date):
+        return birth
+    if isinstance(birth, str):
+        try:
+            return datetime.strptime(birth, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError("Invalid birth date format.")
+    return birth
 
 
 def _username_suggestions(username):
@@ -40,6 +53,7 @@ def register_user(username, email, password, first_name, last_name, phone, birth
     if User.objects.filter(email=email).exists():
         raise ValueError("This email is already registered. Try logging in instead.")
 
+    birth = _parse_birth(birth)
     if birth and birth > date.today():
         raise ValueError("Birth date cannot be in the future.")
 

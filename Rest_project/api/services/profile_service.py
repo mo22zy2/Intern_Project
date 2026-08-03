@@ -1,9 +1,22 @@
-from datetime import date
+from datetime import date, datetime
 
 
 def _imports():
     from ..models import User, UserSettings
     return User, UserSettings
+
+
+def _parse_birth(birth):
+    if birth is None or birth == "":
+        return None
+    if isinstance(birth, date):
+        return birth
+    if isinstance(birth, str):
+        try:
+            return datetime.strptime(birth, "%Y-%m-%d").date()
+        except ValueError:
+            raise ValueError("Invalid birth date format.")
+    return birth
 
 
 def get_profile_data(user):
@@ -21,6 +34,7 @@ def update_profile(user, first_name=None, last_name=None, email=None, phone=None
         if User.objects.filter(email=email).exists():
             raise ValueError("This email is already in use.")
 
+    birth = _parse_birth(birth)
     if birth is not None and birth > date.today():
         raise ValueError("Birth date cannot be in the future.")
 

@@ -157,6 +157,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "api.User"
 
-CHAT_API_URL = os.environ.get('CHAT_API_URL', 'http://localhost:8000/api/v1/nlp/index/answer/1')
+CHAT_API_URL = os.environ.get('CHAT_API_URL', 'http://localhost:9000/api/v1/nlp/index/answer/1')
 
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
