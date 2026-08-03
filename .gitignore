@@ -6,4 +6,3 @@ staticfiles/
 ERRORS.md
 *.md
 drop_test_db.py
-frontend/
