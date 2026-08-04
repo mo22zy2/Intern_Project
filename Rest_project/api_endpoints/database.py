@@ -7,9 +7,12 @@ load_dotenv()
 
 DB_NAME = os.getenv("DB_NAME", "rest_db")
 DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "mo22zy")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 DB_PORT = os.getenv("DB_PORT", "5432")
-DB_HOST = "127.0.0.1"
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
+
+if not DB_PASSWORD:
+    raise RuntimeError("DB_PASSWORD environment variable must be set")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 

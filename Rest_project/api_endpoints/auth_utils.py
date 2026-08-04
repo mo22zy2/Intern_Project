@@ -1,3 +1,5 @@
+import os
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -5,7 +7,7 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = "rest-api-jwt-secret-key-change-in-production"
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY") or os.environ.get("DJANGO_SECRET_KEY") or secrets.token_urlsafe(50)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 7
 
@@ -52,9 +54,12 @@ def get_current_user(
 
     User = _get_user_model()
     try:
-        return User.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
     except User.DoesNotExist:
         raise credentials_exception
+    if not user.is_active:
+        raise credentials_exception
+    return user
 
 
 def get_current_staff_user(
@@ -79,6 +84,9 @@ def get_current_user_optional(
         if user_id is None:
             return None
         User = _get_user_model()
-        return User.objects.get(id=user_id)
+        user = User.objects.get(id=user_id)
+        if not user.is_active:
+            return None
+        return user
     except (JWTError, _get_user_model().DoesNotExist):
         return None

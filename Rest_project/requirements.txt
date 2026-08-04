@@ -11,3 +11,6 @@ sqlalchemy==2.0.35
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 pydantic[email-validator]==2.9.2
+httpx==0.27.2
+pytest==8.3.2
+whitenoise==6.7.0
