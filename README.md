@@ -2,7 +2,15 @@
 
 A full-stack restaurant management platform with **two backends sharing one PostgreSQL database** — a **Django** app (session-based auth, server-rendered HTML) and a **FastAPI** service (JWT auth, JSON API) — plus a **Flutter mobile client** and a **RAG-powered chatbot**.
 
-> **Project Knowledge Graph:** an interactive graph of every file, module, and relationship in this repo lives in [`graphify-out/graph.html`](graphify-out/graph.html). Open it in any browser to explore the codebase visually — community clusters, god nodes, and surprising connections.
+## Project Knowledge Graph
+
+> **Live & interactive:** every file, module, and relationship in this repo is indexed into a navigable knowledge graph — **explore it at [Rest_project Knowledge Graph](https://mo22zy2.github.io/Django-Eats-Intern-Project/)** (deployed to GitHub Pages; no setup needed). The community overview below shows the ~135 module clusters (bubble size = files in the cluster); click the image to open the full interactive graph. A local copy also lives at [`graphify-out/graph.html`](graphify-out/graph.html).
+
+<p align="center">
+  <a href="https://mo22zy2.github.io/Django-Eats-Intern-Project/">
+    <img src="graphify-out/graph-preview.svg" alt="Rest_project knowledge graph — community overview" width="100%">
+  </a>
+</p>
 
 ## Badges
 
@@ -95,11 +103,13 @@ A full-stack restaurant management platform with **two backends sharing one Post
 
 The repository is indexed into a **queryable knowledge graph** (community detection, god-node analysis, and an honest EXTRACTED / INFERRED / AMBIGUOUS audit trail):
 
-- **Interactive visualization:** [`graphify-out/graph.html`](graphify-out/graph.html) — open in any browser, no server needed.
+- **Live interactive visualization:** <https://mo22zy2.github.io/Django-Eats-Intern-Project/> (GitHub Pages; updated from the `gh-pages` branch).
+- **Local copy:** [`graphify-out/graph.html`](graphify-out/graph.html) — open in any browser, no server needed.
+- **Community overview:** [`graphify-out/graph-preview.svg`](graphify-out/graph-preview.svg) — static snapshot for READMEs/docs.
 - **Raw graph data:** `graphify-out/graph.json`.
 - **Audit report:** `graphify-out/GRAPH_REPORT.md`.
 
-> **How to query it:** install `graphify` (`uv tool install graphifyy`) and run `graphify query "Why does AuthProvider bridge the Flutter auth flow to the cart?"` from the repo root. Rebuild after changes with `graphify --update` (or `graphify . --no-viz` for a fresh full build). The `graphify-out/` folder is git-ignored except for `graph.html`.
+> **How to query it:** install `graphify` (`uv tool install graphifyy`) and run `graphify query "Why does AuthProvider bridge the Flutter auth flow to the cart?"` from the repo root. Rebuild after changes with `graphify --update` (or `graphify . --no-viz` for a fresh full build). The `graphify-out/` folder is git-ignored except for `graph.html` and `graph-preview.svg`.
 
 ## Project Structure
 
