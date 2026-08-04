@@ -65,6 +65,8 @@ def create_or_get_card_method(user, card_number):
 def create_payment(order, payment_method, amount, status="completed", paid_at=None):
     from django.utils import timezone
     _, Payment = _imports()
+    if amount is not None and amount <= 0:
+        raise ValueError("Invalid amount")
     return Payment.objects.create(
         order=order,
         payment_method=payment_method,

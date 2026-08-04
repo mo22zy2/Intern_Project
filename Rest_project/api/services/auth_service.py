@@ -20,11 +20,10 @@ def _parse_birth(birth):
             return datetime.strptime(birth, "%Y-%m-%d").date()
         except ValueError:
             raise ValueError("Invalid birth date format.")
-    return birth
+    raise ValueError("Invalid birth date format.")
 
 
 def _username_suggestions(username):
-    User, _, _, _, _ = None, None, None, None, None
     from ..models import User
     suggestions = []
     for suffix in ["123", "1234", "1", "2024", "2025", "00"]:
@@ -41,7 +40,8 @@ def _username_suggestions(username):
     return suggestions
 
 
-def register_user(username, email, password, first_name, last_name, phone, birth):
+def register_user(username, email, password, first_name, last_name, phone=None, birth=None):
+    from django.db import IntegrityError, transaction
     _, _, _, User, UserSettings = _imports()
     if User.objects.filter(username=username).exists():
         sug = _username_suggestions(username)
@@ -57,16 +57,20 @@ def register_user(username, email, password, first_name, last_name, phone, birth
     if birth and birth > date.today():
         raise ValueError("Birth date cannot be in the future.")
 
-    user = User.objects.create_user(
-        username=username,
-        email=email,
-        password=password,
-        first_name=first_name,
-        last_name=last_name,
-        phone=phone,
-        birth=birth,
-    )
-    UserSettings.objects.create(user=user)
+    try:
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                phone=phone or "",
+                birth=birth,
+            )
+            UserSettings.objects.create(user=user)
+    except IntegrityError:
+        raise ValueError("That username or email is already taken")
     return user
 
 
@@ -81,9 +85,22 @@ def validate_registration_data(password, confirm_password):
         raise ValueError("Password is too weak. Try a mix of letters, numbers, and symbols (8+ characters).")
 
 
+LOGIN_MAX_ATTEMPTS = 5
+LOGIN_LOCKOUT_SECONDS = 300
+
+
 def authenticate_user(username, password, request=None):
+    from django.core.cache import cache
     authenticate, _, _, _, _ = _imports()
+    lock_key = f"login_failures_{username}"
+    attempts = cache.get(lock_key, 0)
+    if attempts >= LOGIN_MAX_ATTEMPTS:
+        raise ValueError("Too many failed login attempts. Try again in 5 minutes.")
     user = authenticate(request=request, username=username, password=password)
+    if user is None:
+        cache.set(lock_key, attempts + 1, LOGIN_LOCKOUT_SECONDS)
+        return None
+    cache.delete(lock_key)
     return user
 
 

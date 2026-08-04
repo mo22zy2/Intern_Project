@@ -16,14 +16,14 @@ def get_dashboard_stats():
 
     total_users = User.objects.count()
     total_orders = Order.objects.count()
-    total_revenue = Payment.objects.filter(status="completed").aggregate(s=Sum("amount"))["s"] or 0
+    total_revenue = Payment.objects.filter(status__in=["completed", "confirmed"]).aggregate(s=Sum("amount"))["s"] or 0
     total_menu_items = Menu.objects.count()
     low_stock = Inventory.objects.filter(item_count__lt=10).count()
     total_reservations = ReservationSystem.objects.count()
 
     orders_today = Order.objects.filter(created_at__date=now.date()).count()
     revenue_today = Payment.objects.filter(
-        status="completed", paid_at__date=now.date()
+        status__in=["completed", "confirmed"], paid_at__date=now.date()
     ).aggregate(s=Sum("amount"))["s"] or 0
 
     return {
@@ -48,7 +48,7 @@ def get_revenue_last_30_days():
         days.append(d)
     data = (
         Payment.objects
-        .filter(status="completed", paid_at__date__gte=thirty_days_ago.date())
+        .filter(status__in=["completed", "confirmed"], paid_at__date__gte=thirty_days_ago.date())
         .annotate(date=TruncDate("paid_at"))
         .values("date")
         .annotate(total=Sum("amount"))
@@ -106,10 +106,19 @@ def update_order_status(order_id, new_status):
         )
 
     if new_status == "confirmed" and order.status == "pending":
-        for item in order.orderitem_set.all():
-            inv = item.menu.item
-            inv.item_count = max(0, (inv.item_count or 0) - item.quantity)
-            inv.save(update_fields=["item_count"])
+        from django.db import transaction
+        with transaction.atomic():
+            inventory_ids = list({item.menu.item_id for item in order.orderitem_set.all()})
+            locked = {
+                inv.id: inv
+                for inv in Inventory.objects.select_for_update().filter(id__in=inventory_ids)
+            }
+            for item in order.orderitem_set.all():
+                inv = locked[item.menu.item_id]
+                if (inv.item_count or 0) < item.quantity:
+                    raise ValueError(f"Not enough stock for {inv.item_name}")
+                inv.item_count = (inv.item_count or 0) - item.quantity
+                inv.save(update_fields=["item_count"])
 
     order.status = new_status
     order.save(update_fields=["status"])
@@ -145,10 +154,26 @@ def get_all_menu_items_admin():
 
 def add_menu_item(item_name, category_id, price, image_url, available, stock_count=0):
     _, _, _, _, Menu, Category, Inventory, _ = _imports()
-    inventory, _ = Inventory.objects.get_or_create(item_name=item_name)
-    inventory.item_count = stock_count
-    inventory.save()
-    category = Category.objects.get(id=category_id)
+    try:
+        price = float(price)
+    except (ValueError, TypeError):
+        raise ValueError("Invalid price")
+    if price < 0:
+        raise ValueError("Price cannot be negative")
+    try:
+        stock_count = int(stock_count)
+    except (ValueError, TypeError):
+        raise ValueError("Invalid stock count")
+    if stock_count < 0:
+        raise ValueError("Stock count cannot be negative")
+    try:
+        category = Category.objects.get(id=category_id)
+    except Category.DoesNotExist:
+        raise ValueError("Invalid category")
+    inventory, created = Inventory.objects.get_or_create(item_name=item_name)
+    if created:
+        inventory.item_count = stock_count
+        inventory.save()
     return Menu.objects.create(
         item=inventory,
         category=category,
@@ -189,6 +214,12 @@ def update_inventory_stock(inventory_id, item_count):
         inv = Inventory.objects.get(id=inventory_id)
     except Inventory.DoesNotExist:
         raise ValueError("Inventory item not found")
+    try:
+        item_count = int(item_count)
+    except (ValueError, TypeError):
+        raise ValueError("Invalid stock count")
+    if item_count < 0:
+        raise ValueError("Stock count cannot be negative")
     inv.item_count = item_count
     inv.save(update_fields=["item_count"])
     return inv
@@ -265,6 +296,8 @@ def add_customization(menu_id, option_name, extra_price=0):
         extra_price = float(extra_price)
     except (ValueError, TypeError):
         raise ValueError("Invalid extra price")
+    if extra_price < 0:
+        raise ValueError("Extra price cannot be negative")
     return MenuCustomizationOption.objects.create(
         menu=menu, option_name=name, extra_price=extra_price
     )
@@ -317,7 +350,7 @@ def get_sales_report(days=30):
     orders = Order.objects.filter(created_at__gte=since)
     total_orders = orders.count()
     total_revenue = Payment.objects.filter(
-        status="completed", paid_at__gte=since
+        status__in=["completed", "confirmed"], paid_at__gte=since
     ).aggregate(s=Sum("amount"))["s"] or 0
     by_status = (
         orders.values("status")

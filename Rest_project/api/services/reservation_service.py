@@ -76,6 +76,11 @@ def create_reservation(user, reservation_date, reservation_time, seats):
         seats,
     )
     ReservationSystem, = _imports()
+    if ReservationSystem.objects.filter(
+        reservation_date=parsed_date,
+        reservation_time=parsed_time,
+    ).exclude(status__in=["cancelled", "declined"]).exists():
+        raise ValueError("This time slot is already booked. Please choose another time.")
     return ReservationSystem.objects.create(
         user=user,
         reservation_date=parsed_date,
@@ -109,13 +114,19 @@ def update_reservation(reservation, reservation_date=None, reservation_time=None
     parsed_date, parsed_time, parsed_seats = validate_reservation_input(
         new_date or reservation.reservation_date.isoformat(),
         new_time or reservation.reservation_time.isoformat(),
-        seats or reservation.seats,
+        seats if seats is not None else reservation.seats,
     )
+    ReservationSystem, = _imports()
+    if ReservationSystem.objects.filter(
+        reservation_date=parsed_date,
+        reservation_time=parsed_time,
+    ).exclude(status__in=["cancelled", "declined"]).exclude(id=reservation.id).exists():
+        raise ValueError("This time slot is already booked. Please choose another time.")
     if reservation_date:
         reservation.reservation_date = parsed_date
     if reservation_time:
         reservation.reservation_time = parsed_time
-    if seats:
+    if seats is not None:
         reservation.seats = parsed_seats
     reservation.save()
 

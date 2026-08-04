@@ -11,11 +11,19 @@ def get_or_create_cart(user):
 
 def add_item_to_cart(user, menu, quantity, option_ids=None):
     Cart, CartItem, _, MenuCustomizationOption = _imports()
+    if not isinstance(quantity, int) or quantity <= 0:
+        raise ValueError("Invalid quantity")
     cart = get_or_create_cart(user)
     option_ids = option_ids or []
 
     if option_ids:
-        options = MenuCustomizationOption.objects.filter(id__in=option_ids, menu=menu)
+        try:
+            parsed_ids = [int(oid) for oid in option_ids]
+        except (TypeError, ValueError):
+            raise ValueError("Invalid customization option")
+        options = MenuCustomizationOption.objects.filter(menu=menu, id__in=parsed_ids)
+        if options.count() != len(set(parsed_ids)):
+            raise ValueError("Invalid customization option")
         names = [o.option_name for o in options]
         options_text = ", ".join(names) if names else ""
     else:
@@ -71,12 +79,11 @@ def get_cart_items_with_prices(cart):
 
 def update_cart_item_quantity(cart, item_id, quantity):
     _, CartItem, _, _ = _imports()
+    if not isinstance(quantity, int) or quantity <= 0:
+        raise ValueError("Invalid quantity")
     item = CartItem.objects.get(id=item_id, cart=cart)
-    if quantity > 0:
-        item.quantity = quantity
-        item.save()
-    else:
-        item.delete()
+    item.quantity = quantity
+    item.save()
     return item
 
 
