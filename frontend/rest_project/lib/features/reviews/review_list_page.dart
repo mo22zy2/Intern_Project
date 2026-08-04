@@ -81,7 +81,10 @@ class _ReviewListPageState extends State<ReviewListPage> {
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16),
                         title: Text(
-                          r["menu_name"] as String? ?? "Menu Item",
+                          r["menu_name"] as String? ??
+                              (r["menu_id"] != null
+                                  ? "Menu #${r["menu_id"]}"
+                                  : "Menu Item"),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

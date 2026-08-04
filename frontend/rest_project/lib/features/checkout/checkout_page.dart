@@ -487,20 +487,48 @@ class OrderConfirmationPage extends StatelessWidget {
                 ),
               ],
               const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context)
-                    .popUntil((route) => route.isFirst),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              if (orderId != null)
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context)
+                      .popUntil((route) => route.isFirst),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                  ),
+                  child: const Text(
+                    "BACK TO HOME",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                )
+              else
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.orders,
+                    (route) => route.isFirst,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                  ),
+                  child: const Text(
+                    "VIEW ORDER HISTORY",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
                 ),
-                child: const Text(
-                  "BACK TO HOME",
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1),
-                ),
-              ),
             ],
           ),
         ),

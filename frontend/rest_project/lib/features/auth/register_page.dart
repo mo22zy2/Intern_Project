@@ -18,8 +18,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _birthDateController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  DateTime? _birthDate;
   bool _obscure = true;
   bool _confirmObscure = true;
 
@@ -29,9 +32,34 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneController.dispose();
+    _birthDateController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickBirthDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _birthDate ?? now.subtract(const Duration(days: 365 * 20)),
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDate = picked;
+        _birthDateController.text =
+            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+      });
+    }
+  }
+
+  String? get _birthDateValue {
+    final d = _birthDate;
+    if (d == null) return null;
+    return "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
   }
 
   Future<void> _submit() async {
@@ -45,6 +73,10 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _emailController.text.trim(),
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
+      phone: _phoneController.text.trim().isEmpty
+          ? null
+          : _phoneController.text.trim(),
+      birth: _birthDateValue,
     );
 
     if (!mounted) return;
@@ -152,6 +184,30 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                      labelText: "Phone (optional)",
+                      prefixIcon: Icon(Icons.phone_outlined),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _birthDateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Date of Birth (optional)",
+                      hintText: "YYYY-MM-DD",
+                      prefixIcon: const Icon(Icons.cake_outlined),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.date_range),
+                        onPressed: _pickBirthDate,
+                      ),
+                    ),
+                    onTap: _pickBirthDate,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(

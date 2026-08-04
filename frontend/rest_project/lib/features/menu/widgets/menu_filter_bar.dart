@@ -13,7 +13,7 @@ class MenuFilterBar extends StatelessWidget {
     super.key,
     this.categories = const [],
     this.selectedCategoryId,
-    this.selectedSort = "Popular",
+    this.selectedSort = "popular",
     this.onCategoryChanged,
     this.onSortChanged,
   });
@@ -59,16 +59,20 @@ class MenuFilterBar extends StatelessWidget {
             value: selectedSort,
             items: const [
               DropdownMenuItem(
-                value: "Popular",
+                value: "popular",
                 child: Text("Most Popular"),
               ),
               DropdownMenuItem(
-                value: "Low",
+                value: "price_low",
                 child: Text("Price Low"),
               ),
               DropdownMenuItem(
-                value: "High",
+                value: "price_high",
                 child: Text("Price High"),
+              ),
+              DropdownMenuItem(
+                value: "newest",
+                child: Text("Newest"),
               ),
             ],
             onChanged: onSortChanged,

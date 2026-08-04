@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/app_navbar.dart';
-import 'data/dummy_data.dart';
 import 'models/menu_model.dart';
 import 'services/menu_service.dart';
 import 'widgets/menu_card.dart';
@@ -29,7 +28,7 @@ class _MenuPageState extends State<MenuPage> {
 
   String? _searchQuery;
   int? _selectedCategoryId;
-  String _selectedSort = "Popular";
+  String _selectedSort = "popular";
   Timer? _debounce;
 
   @override
@@ -67,9 +66,9 @@ class _MenuPageState extends State<MenuPage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _items = dummyMenu;
+          _items = [];
           _isLoading = false;
-          _error = "Could not connect to server. Showing sample data.";
+          _error = "Could not load the menu. Check your connection and try again.";
         });
       }
     }
@@ -132,7 +131,7 @@ class _MenuPageState extends State<MenuPage> {
                 _loadMenu();
               },
               onSortChanged: (sort) {
-                setState(() => _selectedSort = sort ?? "Popular");
+                setState(() => _selectedSort = sort ?? "popular");
                 _loadMenu();
               },
             ),
@@ -144,32 +143,54 @@ class _MenuPageState extends State<MenuPage> {
               )
             else if (_error != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Text(
-                  _error!,
-                  style: const TextStyle(
-                    color: AppColors.subtitle,
-                    fontSize: 14,
-                  ),
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.cloud_off,
+                      color: AppColors.subtitle,
+                      size: 48,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.subtitle,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: _loadMenu,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text("RETRY"),
+                    ),
+                  ],
                 ),
+              )
+            else
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _items.length,
+                gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: columns,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                  childAspectRatio: .67,
+                ),
+                itemBuilder: (context, index) {
+                  return MenuCard(
+                    item: _items[index],
+                  );
+                },
               ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _items.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: columns,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: .67,
-              ),
-              itemBuilder: (context, index) {
-                return MenuCard(
-                  item: _items[index],
-                );
-              },
-            ),
           ],
         ),
       ),

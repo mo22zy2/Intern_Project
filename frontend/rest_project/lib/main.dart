@@ -11,22 +11,37 @@ void main() async {
   final cartProvider = CartProvider();
   await cartProvider.loadFromStorage();
 
+  final authProvider = AuthProvider();
+  try {
+    await authProvider.init();
+  } catch (_) {
+    // Startup must not crash if secure storage / network init fails.
+  }
+
   runApp(
-    DjangoEats(cartProvider: cartProvider),
+    DjangoEats(
+      cartProvider: cartProvider,
+      authProvider: authProvider,
+    ),
   );
 }
 
 class DjangoEats extends StatelessWidget {
   final CartProvider cartProvider;
+  final AuthProvider authProvider;
 
-  const DjangoEats({super.key, required this.cartProvider});
+  const DjangoEats({
+    super.key,
+    required this.cartProvider,
+    required this.authProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: cartProvider),
-        ChangeNotifierProvider(create: (_) => AuthProvider()..init()),
+        ChangeNotifierProvider.value(value: authProvider),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -145,9 +145,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       if (_order!["payment"] != null)
                         _infoRow(
                           "Payment",
-                          (_order!["payment"] as Map)["method_type"]
-                                  as String? ??
-                              "N/A",
+                          (((_order!["payment"] as Map)["status"]
+                                  as String?)
+                              ?.toUpperCase() ??
+                              "N/A"),
                         ),
                     ],
                   ),
