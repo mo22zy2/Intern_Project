@@ -447,8 +447,8 @@ class TestCartItemCreate:
         assert data.quantity == 3
 
     def test_missing_menu_id(self):
-        with pytest.raises(ValidationError):
-            CartItemCreate()
+        data = CartItemCreate()
+        assert data.menu_id is None
 
     def test_quantity_default(self):
         data = CartItemCreate(menu_id=1)

@@ -13,7 +13,30 @@ from api_endpoints.auth_utils import (
     SECRET_KEY,
     ALGORITHM,
 )
-from api_endpoints.models import User
+
+
+class DoesNotExist(Exception):
+    pass
+
+
+class FakeUser:
+    def __init__(self, id, is_active=True):
+        self.id = id
+        self.is_active = is_active
+
+
+class FakeUserManager:
+    def get(self, id):
+        if id == 1:
+            return FakeUser(1, is_active=True)
+        if id == 2:
+            return FakeUser(2, is_active=False)
+        raise DoesNotExist
+
+
+class FakeUserModel:
+    DoesNotExist = DoesNotExist
+    objects = FakeUserManager()
 
 
 class TestHashPassword:
@@ -67,53 +90,50 @@ class TestCreateAccessToken:
 
 
 class TestGetCurrentUser:
-    @patch("api_endpoints.auth_utils.jwt.decode")
-    def test_get_current_user_valid_token_returns_user(self, mock_jwt_decode):
-        mock_jwt_decode.return_value = {"user_id": 1}
-        mock_db = MagicMock()
-        mock_user = MagicMock(spec=User)
-        mock_user.id = 1
-        mock_db.query.return_value.filter.return_value.first.return_value = mock_user
-        mock_credentials = MagicMock()
-        mock_credentials.credentials = "valid_token"
+    @staticmethod
+    def _credentials(token):
+        creds = MagicMock()
+        creds.credentials = token
+        return creds
 
-        result = get_current_user(credentials=mock_credentials, db=mock_db)
+    @patch("api_endpoints.auth_utils._get_user_model")
+    def test_get_current_user_valid_token_returns_user(self, mock_get_user_model):
+        mock_get_user_model.return_value = FakeUserModel
+        token = create_access_token({"user_id": 1})
 
-        assert result == mock_user
-        mock_jwt_decode.assert_called_once_with(
-            "valid_token", SECRET_KEY, algorithms=[ALGORITHM]
-        )
+        result = get_current_user(credentials=self._credentials(token))
 
-    @patch("api_endpoints.auth_utils.jwt.decode")
-    def test_get_current_user_invalid_token_raises(self, mock_jwt_decode):
-        mock_jwt_decode.side_effect = jwt.JWTError("bad token")
-        mock_db = MagicMock()
-        mock_credentials = MagicMock()
-        mock_credentials.credentials = "bad_token"
+        assert result.id == 1
+        assert result.is_active is True
 
+    def test_get_current_user_invalid_token_raises(self):
         with pytest.raises(HTTPException) as exc_info:
-            get_current_user(credentials=mock_credentials, db=mock_db)
+            get_current_user(credentials=self._credentials("bad_token"))
         assert exc_info.value.status_code == 401
 
-    @patch("api_endpoints.auth_utils.jwt.decode")
-    def test_get_current_user_missing_user_id_raises(self, mock_jwt_decode):
-        mock_jwt_decode.return_value = {"sub": "123"}  # no user_id
-        mock_db = MagicMock()
-        mock_credentials = MagicMock()
-        mock_credentials.credentials = "token_no_userid"
+    @patch("api_endpoints.auth_utils._get_user_model")
+    def test_get_current_user_missing_user_id_raises(self, mock_get_user_model):
+        mock_get_user_model.return_value = FakeUserModel
+        token = create_access_token({"sub": "123"})  # no user_id
 
         with pytest.raises(HTTPException) as exc_info:
-            get_current_user(credentials=mock_credentials, db=mock_db)
+            get_current_user(credentials=self._credentials(token))
         assert exc_info.value.status_code == 401
 
-    @patch("api_endpoints.auth_utils.jwt.decode")
-    def test_get_current_user_user_not_found_raises(self, mock_jwt_decode):
-        mock_jwt_decode.return_value = {"user_id": 999}
-        mock_db = MagicMock()
-        mock_db.query.return_value.filter.return_value.first.return_value = None
-        mock_credentials = MagicMock()
-        mock_credentials.credentials = "token_for_missing_user"
+    @patch("api_endpoints.auth_utils._get_user_model")
+    def test_get_current_user_user_not_found_raises(self, mock_get_user_model):
+        mock_get_user_model.return_value = FakeUserModel
+        token = create_access_token({"user_id": 999})
 
         with pytest.raises(HTTPException) as exc_info:
-            get_current_user(credentials=mock_credentials, db=mock_db)
+            get_current_user(credentials=self._credentials(token))
+        assert exc_info.value.status_code == 401
+
+    @patch("api_endpoints.auth_utils._get_user_model")
+    def test_get_current_user_inactive_user_raises(self, mock_get_user_model):
+        mock_get_user_model.return_value = FakeUserModel
+        token = create_access_token({"user_id": 2})  # user exists but is inactive
+
+        with pytest.raises(HTTPException) as exc_info:
+            get_current_user(credentials=self._credentials(token))
         assert exc_info.value.status_code == 401
