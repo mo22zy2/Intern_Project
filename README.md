@@ -172,8 +172,8 @@ Set `TELEGRAM_BOT_TOKEN` (and optionally `TELEGRAM_WEBHOOK_SECRET`) in `.env`; r
 
 ```bash
 # Clone the repo
-git clone https://github.com/mo22zy2/Intern_Project.git
-cd Intern_Project
+git clone https://github.com/mo22zy2/Django-Eats-Intern-Project.git
+cd Django-Eats-Intern-Project
 
 # Create and activate a virtual environment
 python -m venv venv
