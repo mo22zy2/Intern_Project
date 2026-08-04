@@ -6,3 +6,7 @@ staticfiles/
 ERRORS.md
 *.md
 drop_test_db.py
+
+# graphify knowledge graph outputs (keep the interactive HTML for the README)
+graphify-out/*
+!graphify-out/graph.html
