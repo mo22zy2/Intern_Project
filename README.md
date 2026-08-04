@@ -66,7 +66,7 @@ A full-stack restaurant management platform with **two backends sharing one Post
 │   Django        │     │   FastAPI        │     │   Flutter App   │
 │   (Session      │     │   (JWT API)      │     │   (mobile)      │
 │    Auth)        │     │                  │     │                 │
-│   localhost:8000│     │   localhost:8001 │     │  → FastAPI:8000 │
+│   localhost:8070│     │   localhost:8071 │     │  → FastAPI:8071 │
 │   HTML pages    │     │   /auth, /menu,  │     │                 │
 │                 │     │   /cart, /orders │     │                 │
 └────────┬────────┘     └────────┬─────────┘     └────────┬────────┘
@@ -79,10 +79,10 @@ A full-stack restaurant management platform with **two backends sharing one Post
             └─────────────────┘
 ```
 
-- **Django** serves HTML templates with session-based authentication (port **8000**).
-- **FastAPI** serves JSON endpoints with JWT token-based authentication (port **8001** — never share 8000).
+- **Django** serves HTML templates with session-based authentication (port **8070**).
+- **FastAPI** serves JSON endpoints with JWT token-based authentication (port **8071** — never share 8070).
 - Both backends read/write the **same PostgreSQL database** and share the Django service layer (`api/services/`). FastAPI reuses Django's ORM via `django.setup()` and keeps SQLAlchemy mirror models in sync with Django's schema.
-- The **Flutter app** talks to FastAPI on port 8000 by default (`10.0.2.2:8000` on the Android emulator, `localhost:8000` elsewhere).
+- The **Flutter app** talks to FastAPI on port 8071 by default (`10.0.2.2:8071` on the Android emulator, `localhost:8071` elsewhere).
 
 ## Tech Stack
 
@@ -145,7 +145,7 @@ The project integrates a **mini RAG (Retrieval-Augmented Generation) chatbot** t
 - **pgvector** — PostgreSQL extension storing the restaurant knowledge-base embeddings for vector similarity search.
 - **Qdrant** — a dedicated vector database for fast, scalable similarity retrieval.
 - Retrieves the most relevant documents for a question, then generates a grounded answer from the retrieved context.
-- Wired into the Django frontend through the `CHAT_API_URL` environment variable (default: `http://localhost:8000/api/v1/nlp/index/answer/1`), injected into templates via the `chat_api_url` context processor.
+- Wired into the Django frontend through the `CHAT_API_URL` environment variable (default: `http://localhost:8081/api/v1/nlp/index/answer/1`), injected into templates via the `chat_api_url` context processor.
 
 ## Telegram Notifications
 
@@ -202,12 +202,15 @@ copy .env.example .env   # Windows
 # Run Django migrations
 python manage.py migrate
 
-# Run Django dev server (port 8000)
-python manage.py runserver
+# (Optional) Seed the menu from data/menu.json (categories, items, extras)
+python manage.py import_menu_json data/menu.json
 
-# In a separate terminal, run FastAPI on a different port (8001) —
-# both backends default to 8000, so they cannot share it.
-uvicorn api_endpoints.main:app --reload --port 8001
+# Run Django dev server (port 8070)
+python manage.py runserver 8070
+
+# In a separate terminal, run FastAPI on a different port (8071) —
+# both backends default to 8070, so they cannot share it.
+uvicorn api_endpoints.main:app --reload --port 8071
 
 # (Optional) Run the Flutter app — see "Mobile App (Flutter)"
 ```
@@ -226,9 +229,9 @@ uvicorn api_endpoints.main:app --reload --port 8001
 | `DJANGO_ALLOWED_HOSTS` | `localhost,127.0.0.1` | — | Comma-separated allowed hosts |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `http://localhost,http://127.0.0.1` | — | CSRF-trusted origins |
 | `JWT_SECRET_KEY` | — | ✅ (prod) | FastAPI JWT signing key |
-| `CORS_ORIGINS` | `http://localhost:8000,...` | — | Comma-separated CORS allowlist |
-| `CHAT_API_URL` | `http://localhost:8000/api/v1/nlp/index/answer/1` | — | RAG chatbot endpoint |
-| `BASE_URL` | `http://localhost:8000` | — | Base URL for QR codes / links |
+| `CORS_ORIGINS` | `http://localhost:8070,...` | — | Comma-separated CORS allowlist |
+| `CHAT_API_URL` | `http://localhost:8081/api/v1/nlp/index/answer/1` | — | RAG chatbot endpoint |
+| `BASE_URL` | `http://localhost:8070` | — | Base URL for QR codes / links |
 | `TELEGRAM_BOT_TOKEN` | — | — | Telegram bot token for notifications |
 | `TELEGRAM_WEBHOOK_SECRET` | — | — | Secret for Telegram webhook verification |
 
@@ -241,10 +244,10 @@ The mobile client lives in `frontend/rest_project/` and talks to the FastAPI bac
 ```bash
 cd frontend/rest_project
 flutter pub get
-flutter run              # Android emulator targets http://10.0.2.2:8000 by default
+flutter run --web-port 8072   # Android emulator targets http://10.0.2.2:8071 by default
 ```
 
-- The API base URL is resolved at runtime: `API_BASE_URL` env var override → Android emulator (`10.0.2.2:8000`) → `localhost:8000`.
+- The API base URL is resolved at runtime: `API_BASE_URL` env var override → Android emulator (`10.0.2.2:8071`) → `localhost:8071`.
 - Internet permission and cleartext-traffic allowances are preconfigured for Android and iOS.
 - Auth state is initialized before the first frame; cart and auth providers wrap the widget tree.
 - Run the test suite with `flutter test` (see [Testing](#testing)).
@@ -286,7 +289,7 @@ docker compose -f docker/docker-compose.yml up -d
 
 ## API Endpoints (FastAPI)
 
-FastAPI routers use `prefix="/auth"` style — there is no `/api` prefix. Run FastAPI on port 8001 (Django owns 8000). Endpoints:
+FastAPI routers use `prefix="/auth"` style — there is no `/api` prefix. Run FastAPI on port 8071 (Django owns 8070). Endpoints:
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|

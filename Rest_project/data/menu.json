@@ -1,0 +1,608 @@
+{
+  "categories": [
+    "Appetizers",
+    "Salads",
+    "Egyptian Specialties",
+    "Grills & Beef",
+    "Chicken",
+    "Seafood",
+    "Sandwiches",
+    "Desserts",
+    "Beverages"
+  ],
+  "menu_items": [
+    {
+      "item_name": "Hummus with tahini",
+      "category": "Appetizers",
+      "price": 65,
+      "image_url": "https://images.unsplash.com/photo-1547058881-aa0edd92aab3?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 78,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra pita bread",
+          "extra_price": 10
+        },
+        {
+          "option_name": "Extra olive oil drizzle",
+          "extra_price": 5
+        }
+      ]
+    },
+    {
+      "item_name": "Baba ghanoush",
+      "category": "Appetizers",
+      "price": 70,
+      "image_url": "https://images.unsplash.com/photo-1637861004714-49fa0ccbb993?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 55,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Sambousek (fried pastry with meat)",
+      "category": "Appetizers",
+      "price": 85,
+      "image_url": "https://images.unsplash.com/photo-1558458601-0d69a278b8e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 72,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra piece (2 pcs)",
+          "extra_price": 30
+        }
+      ]
+    },
+    {
+      "item_name": "Vine leaves (Waraq enab)",
+      "category": "Appetizers",
+      "price": 90,
+      "image_url": "https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 60,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Feteer meshaltet (plain)",
+      "category": "Appetizers",
+      "price": 95,
+      "image_url": "https://images.unsplash.com/photo-1558458601-0d69a278b8e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 68,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Honey & cheese filling",
+          "extra_price": 35
+        },
+        {
+          "option_name": "Nutella filling",
+          "extra_price": 40
+        }
+      ]
+    },
+    {
+      "item_name": "Fattoush salad",
+      "category": "Salads",
+      "price": 80,
+      "image_url": "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 74,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Grilled chicken topping",
+          "extra_price": 45
+        }
+      ]
+    },
+    {
+      "item_name": "Tabbouleh",
+      "category": "Salads",
+      "price": 75,
+      "image_url": "https://images.unsplash.com/photo-1599021419847-d8a7a6aba5b4?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 58,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Greek salad",
+      "category": "Salads",
+      "price": 90,
+      "image_url": "https://images.unsplash.com/photo-1621634892819-80f7874c96dd?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 62,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra feta cheese",
+          "extra_price": 25
+        }
+      ]
+    },
+    {
+      "item_name": "Rocca (arugula) salad with pomegranate",
+      "category": "Salads",
+      "price": 85,
+      "image_url": "https://images.unsplash.com/photo-1549745708-fa4a8423a0b4?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 50,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Koshari (large)",
+      "category": "Egyptian Specialties",
+      "price": 75,
+      "image_url": "https://images.unsplash.com/photo-1628606336803-77914bbe8225?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 95,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra tomato sauce",
+          "extra_price": 10
+        },
+        {
+          "option_name": "Extra fried onions",
+          "extra_price": 15
+        },
+        {
+          "option_name": "Extra dakka (garlic vinegar)",
+          "extra_price": 5
+        }
+      ]
+    },
+    {
+      "item_name": "Molokhia with rabbit",
+      "category": "Egyptian Specialties",
+      "price": 220,
+      "image_url": "https://images.unsplash.com/photo-1605291535126-2d71fea483c1?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 66,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra rice",
+          "extra_price": 20
+        }
+      ]
+    },
+    {
+      "item_name": "Molokhia with chicken",
+      "category": "Egyptian Specialties",
+      "price": 165,
+      "image_url": "https://images.unsplash.com/photo-1637861004714-49fa0ccbb993?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 80,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra rice",
+          "extra_price": 20
+        }
+      ]
+    },
+    {
+      "item_name": "Mahshi (stuffed vegetables) mixed platter",
+      "category": "Egyptian Specialties",
+      "price": 140,
+      "image_url": "https://images.unsplash.com/photo-1775181180462-18b20da9340e?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 70,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Ful medames with egg",
+      "category": "Egyptian Specialties",
+      "price": 60,
+      "image_url": "https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 84,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra egg",
+          "extra_price": 15
+        },
+        {
+          "option_name": "Extra baladi bread",
+          "extra_price": 5
+        }
+      ]
+    },
+    {
+      "item_name": "Taameya (Egyptian falafel) plate",
+      "category": "Egyptian Specialties",
+      "price": 55,
+      "image_url": "https://images.unsplash.com/photo-1637861004981-6cc58ca33839?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 88,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Tahini sauce cup",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Fattah (rice, bread, garlic vinegar & meat)",
+      "category": "Egyptian Specialties",
+      "price": 195,
+      "image_url": "https://images.unsplash.com/photo-1547058881-aa0edd92aab3?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 63,
+      "available": false,
+      "extras": []
+    },
+    {
+      "item_name": "Classic beef burger",
+      "category": "Grills & Beef",
+      "price": 185,
+      "image_url": "https://images.unsplash.com/photo-1576488445602-400cb75f421a?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 90,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra cheese",
+          "extra_price": 20
+        },
+        {
+          "option_name": "Extra beef patty",
+          "extra_price": 55
+        },
+        {
+          "option_name": "Beef bacon",
+          "extra_price": 30
+        }
+      ]
+    },
+    {
+      "item_name": "Kofta grill (250g)",
+      "category": "Grills & Beef",
+      "price": 210,
+      "image_url": "https://images.unsplash.com/photo-1719282431565-3b30bb7d2658?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 82,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra tahini",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Beef steak with mushroom sauce",
+      "category": "Grills & Beef",
+      "price": 320,
+      "image_url": "https://images.unsplash.com/photo-1684864115205-242c064363e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 71,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra mushroom sauce",
+          "extra_price": 25
+        },
+        {
+          "option_name": "Mashed potato side",
+          "extra_price": 35
+        }
+      ]
+    },
+    {
+      "item_name": "Mixed grill platter (beef & kofta)",
+      "category": "Grills & Beef",
+      "price": 385,
+      "image_url": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 86,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra rice",
+          "extra_price": 25
+        }
+      ]
+    },
+    {
+      "item_name": "Beef hawawshi",
+      "category": "Grills & Beef",
+      "price": 130,
+      "image_url": "https://images.unsplash.com/photo-1662116765994-1e4200c43589?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 77,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra spicy",
+          "extra_price": 0
+        }
+      ]
+    },
+    {
+      "item_name": "Grilled chicken breast fillet",
+      "category": "Chicken",
+      "price": 175,
+      "image_url": "https://images.unsplash.com/photo-1699728088614-7d1d4277414b?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 75,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Garlic sauce (toum)",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Chicken shawarma plate",
+      "category": "Chicken",
+      "price": 145,
+      "image_url": "https://images.unsplash.com/photo-1662116765994-1e4200c43589?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 92,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra garlic sauce",
+          "extra_price": 10
+        },
+        {
+          "option_name": "Extra fries",
+          "extra_price": 25
+        }
+      ]
+    },
+    {
+      "item_name": "Half grilled chicken with rice",
+      "category": "Chicken",
+      "price": 190,
+      "image_url": "https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 79,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Chicken fajita",
+      "category": "Chicken",
+      "price": 165,
+      "image_url": "https://images.unsplash.com/photo-1676300187013-7540d4e9440d?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 58,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra cheese",
+          "extra_price": 20
+        }
+      ]
+    },
+    {
+      "item_name": "Crispy chicken tenders (6 pcs)",
+      "category": "Chicken",
+      "price": 155,
+      "image_url": "https://images.unsplash.com/photo-1706145787116-1069705370a6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 81,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "BBQ dip",
+          "extra_price": 10
+        },
+        {
+          "option_name": "Ranch dip",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Grilled seabass (Denis) whole",
+      "category": "Seafood",
+      "price": 340,
+      "image_url": "https://images.unsplash.com/photo-1701688596783-231b3764ef67?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 64,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra rice",
+          "extra_price": 25
+        },
+        {
+          "option_name": "Extra salad",
+          "extra_price": 20
+        }
+      ]
+    },
+    {
+      "item_name": "Shrimp tagine",
+      "category": "Seafood",
+      "price": 295,
+      "image_url": "https://images.unsplash.com/photo-1680990999782-ba7fe26e4d0b?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 69,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Calamari fritti",
+      "category": "Seafood",
+      "price": 175,
+      "image_url": "https://images.unsplash.com/photo-1637861004981-6cc58ca33839?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 57,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Tartar sauce",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Sayadeya rice with fish fillet",
+      "category": "Seafood",
+      "price": 230,
+      "image_url": "https://images.unsplash.com/photo-1680405531955-8b4981bb1b0c?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 60,
+      "available": false,
+      "extras": []
+    },
+    {
+      "item_name": "Falafel sandwich",
+      "category": "Sandwiches",
+      "price": 35,
+      "image_url": "https://images.unsplash.com/photo-1593001869807-9b07543c8688?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 89,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra falafel patty",
+          "extra_price": 8
+        },
+        {
+          "option_name": "Extra tahini",
+          "extra_price": 5
+        }
+      ]
+    },
+    {
+      "item_name": "Shawarma sandwich (chicken)",
+      "category": "Sandwiches",
+      "price": 75,
+      "image_url": "https://images.unsplash.com/photo-1662116765994-1e4200c43589?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 91,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra garlic sauce",
+          "extra_price": 10
+        },
+        {
+          "option_name": "Extra pickles",
+          "extra_price": 5
+        }
+      ]
+    },
+    {
+      "item_name": "Shawarma sandwich (beef)",
+      "category": "Sandwiches",
+      "price": 90,
+      "image_url": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 83,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra tahini",
+          "extra_price": 8
+        }
+      ]
+    },
+    {
+      "item_name": "Sokak sandwich (Turkish sausage)",
+      "category": "Sandwiches",
+      "price": 95,
+      "image_url": "https://images.unsplash.com/photo-1719282431723-9d0f4370d4bc?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 54,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra cheese",
+          "extra_price": 15
+        }
+      ]
+    },
+    {
+      "item_name": "Basbousa (semolina cake)",
+      "category": "Desserts",
+      "price": 55,
+      "image_url": "https://images.unsplash.com/photo-1558458601-0d69a278b8e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 73,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra cream topping",
+          "extra_price": 10
+        }
+      ]
+    },
+    {
+      "item_name": "Om Ali (Egyptian bread pudding)",
+      "category": "Desserts",
+      "price": 65,
+      "image_url": "https://images.unsplash.com/photo-1558458601-0d69a278b8e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 87,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra nuts",
+          "extra_price": 15
+        }
+      ]
+    },
+    {
+      "item_name": "Kunafa with cream",
+      "category": "Desserts",
+      "price": 80,
+      "image_url": "https://images.unsplash.com/photo-1558458601-0d69a278b8e6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 85,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra pistachio topping",
+          "extra_price": 20
+        }
+      ]
+    },
+    {
+      "item_name": "Rice pudding (Roz bel laban)",
+      "category": "Desserts",
+      "price": 45,
+      "image_url": "https://images.unsplash.com/photo-1547058881-aa0edd92aab3?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 61,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Fresh mango juice",
+      "category": "Beverages",
+      "price": 45,
+      "image_url": "https://images.unsplash.com/photo-1664398346444-f6feafaa88b6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 76,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Hibiscus tea (Karkade)",
+      "category": "Beverages",
+      "price": 30,
+      "image_url": "https://images.unsplash.com/photo-1566346289644-4e9c3dce657d?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 67,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Served hot",
+          "extra_price": 0
+        },
+        {
+          "option_name": "Served cold",
+          "extra_price": 0
+        }
+      ]
+    },
+    {
+      "item_name": "Sugarcane juice (Asab)",
+      "category": "Beverages",
+      "price": 35,
+      "image_url": "https://images.unsplash.com/photo-1664398346444-f6feafaa88b6?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 59,
+      "available": true,
+      "extras": []
+    },
+    {
+      "item_name": "Turkish coffee",
+      "category": "Beverages",
+      "price": 40,
+      "image_url": "https://images.unsplash.com/photo-1576685880864-50b3b35f1c55?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 70,
+      "available": true,
+      "extras": [
+        {
+          "option_name": "Extra sugar (Mazbouta)",
+          "extra_price": 0
+        }
+      ]
+    },
+    {
+      "item_name": "Soft drink (can)",
+      "category": "Beverages",
+      "price": 25,
+      "image_url": "https://images.unsplash.com/photo-1621112904899-d14ce062bea8?auto=format&fit=crop&w=1200&q=80",
+      "popularity_score": 65,
+      "available": true,
+      "extras": []
+    }
+  ]
+}

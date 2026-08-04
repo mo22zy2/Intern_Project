@@ -171,7 +171,7 @@ SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 
-CHAT_API_URL = os.environ.get('CHAT_API_URL', 'http://localhost:8000/api/v1/nlp/index/answer/1')
+CHAT_API_URL = os.environ.get('CHAT_API_URL', 'http://localhost:8081/api/v1/nlp/index/answer/1')
 
 BASE_URL = os.environ.get('BASE_URL', 'http://localhost:8000')
 TELEGRAM_WEBHOOK_SECRET = os.environ.get('TELEGRAM_WEBHOOK_SECRET', '')

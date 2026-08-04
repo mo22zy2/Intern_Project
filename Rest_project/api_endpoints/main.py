@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -8,6 +9,9 @@ from .django_setup import setup_django
 from .routers import (
     auth, home, menu, cart, order, reservation, profile, review, payment, admin
 )
+
+
+load_dotenv()
 
 
 @asynccontextmanager
