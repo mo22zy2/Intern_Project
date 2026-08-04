@@ -1,4 +1,5 @@
 {% extends "master.html" %}
+{% load static i18n %}
 
 {% block title %}
 {{ item.item.item_name }}
@@ -34,9 +35,7 @@
             {% if avg_rating %}
             <p class="rating-stars">
                 <strong>Rating:</strong>
-                {% with ''|center:avg_rating|floatformat:0 as range %}
-                {% for _ in range %}★{% endfor %}
-                {% endwith %}
+                {% with rating=avg_rating|floatformat:0 %}{% for i in "12345"|make_list %}{% if i <= rating %}★{% else %}☆{% endif %}{% endfor %}{% endwith %}
                 {{ avg_rating|floatformat:1 }}
             </p>
             {% endif %}
@@ -144,9 +143,7 @@
         {% if avg_rating %}
         <p class="rating-stars">
             Average:
-            {% with ''|center:avg_rating|floatformat:0 as range %}
-            {% for _ in range %}★{% endfor %}
-            {% endwith %}
+            {% with rating=avg_rating|floatformat:0 %}{% for i in "12345"|make_list %}{% if i <= rating %}★{% else %}☆{% endif %}{% endfor %}{% endwith %}
             {{ avg_rating|floatformat:1 }} / 5
         </p>
         {% endif %}

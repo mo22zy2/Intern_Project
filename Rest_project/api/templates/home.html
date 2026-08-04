@@ -81,9 +81,7 @@
                     <span class="price">{{ item.price }} EGP</span>
                     {% if item.avg_rating %}
                     <span class="rating-stars">
-                        {% with ''|center:item.avg_rating|floatformat:0 as range %}
-                        {% for _ in range %}★{% endfor %}
-                        {% endwith %}
+                        {% with rating=item.avg_rating|floatformat:0 %}{% for i in "12345"|make_list %}{% if i <= rating %}★{% else %}☆{% endif %}{% endfor %}{% endwith %}
                         {{ item.avg_rating|floatformat:1 }}
                     </span>
                     {% endif %}
@@ -134,9 +132,7 @@
                 <span class="price">{{ item.price }} EGP</span>
                 {% if item.avg_rating %}
                 <span class="rating-stars">
-                    {% with ''|center:item.avg_rating|floatformat:0 as range %}
-                    {% for _ in range %}★{% endfor %}
-                    {% endwith %}
+                    {% with rating=item.avg_rating|floatformat:0 %}{% for i in "12345"|make_list %}{% if i <= rating %}★{% else %}☆{% endif %}{% endfor %}{% endwith %}
                     {{ item.avg_rating|floatformat:1 }}
                 </span>
                 {% endif %}

@@ -55,7 +55,11 @@ def login_view(request):
         username = request.POST.get("username", "").strip().lower()
         password = request.POST.get("password")
 
-        user = auth_service.authenticate_user(request=request, username=username, password=password)
+        try:
+            user = auth_service.authenticate_user(request=request, username=username, password=password)
+        except ValueError as e:
+            messages.error(request, str(e))
+            return render(request, "auth/login.html")
 
         if user is not None:
             auth_login(request=request, user=user)

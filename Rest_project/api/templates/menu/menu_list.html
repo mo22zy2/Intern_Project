@@ -73,9 +73,7 @@
 
                     {% if menu.avg_rating %}
                     <p class="rating-stars">
-                        {% with ''|center:menu.avg_rating|floatformat:0 as range %}
-                        {% for _ in range %}★{% endfor %}
-                        {% endwith %}
+                        {% with rating=menu.avg_rating|floatformat:0 %}{% for i in "12345"|make_list %}{% if i <= rating %}★{% else %}☆{% endif %}{% endfor %}{% endwith %}
                         {{ menu.avg_rating|floatformat:1 }}
                     </p>
                     {% endif %}

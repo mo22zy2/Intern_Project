@@ -325,9 +325,16 @@ def admin_toggle_active(request, user_id):
 @staff_required
 def admin_reports(request):
     report_type = request.GET.get("type", "sales")
-    days = int(request.GET.get("days", 30))
+    try:
+        days = int(request.GET.get("days", 30))
+    except (ValueError, TypeError):
+        days = 30
 
+    valid_types = ("sales", "inventory", "feedback", "reservations")
     context = {"report_type": report_type, "days": days}
+
+    if report_type not in valid_types:
+        messages.error(request, _("Unknown report type."))
 
     if report_type == "sales":
         context["data"] = admin_service.get_sales_report(days)
@@ -342,7 +349,7 @@ def admin_reports(request):
     elif report_type == "reservations":
         context["data"] = admin_service.get_reservation_report(days)
 
-    if request.GET.get("export") == "csv":
+    if request.GET.get("export") == "csv" and report_type in valid_types:
         import csv
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f'attachment; filename="{report_type}_report.csv"'

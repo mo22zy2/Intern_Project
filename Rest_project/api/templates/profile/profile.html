@@ -151,10 +151,16 @@
             </div>
             <div class="profile-address-actions">
                 {% if not pm.is_default %}
-                <a href="{% url 'set_default_payment_method' pm.id %}" class="btn btn-sm">Set Default</a>
+                <form method="POST" action="{% url 'set_default_payment_method' pm.id %}" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm">Set Default</button>
+                </form>
                 {% endif %}
-                <a href="{% url 'delete_payment_method' pm.id %}" class="btn btn-sm btn-cancel"
-                   onclick="return confirm('Delete this payment method?')">Delete</a>
+                <form method="POST" action="{% url 'delete_payment_method' pm.id %}" style="display:inline"
+                      onsubmit="return confirm('Delete this payment method?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-cancel">Delete</button>
+                </form>
             </div>
         </div>
         {% endfor %}

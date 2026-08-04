@@ -178,7 +178,7 @@
     </div>
 </div>
 
-<script>window.CHAT_API_URL = '{{ CHAT_API_URL }}';</script>
+<script>window.CHAT_API_URL = '{{ CHAT_API_URL|escapejs }}';</script>
 <script src="{% static 'homepage/js/chat.js' %}"></script>
 
 </body>

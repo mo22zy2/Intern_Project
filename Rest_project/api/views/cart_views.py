@@ -9,7 +9,11 @@ from ..services import cart_service
 @login_required(login_url="login")
 def add_to_cart(request, item_id):
     menu = get_object_or_404(Menu, id=item_id)
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (ValueError, TypeError):
+        quantity = 1
+        messages.error(request, _("Invalid quantity. Using quantity 1."))
     option_ids = request.POST.getlist("options")
     cart_service.add_item_to_cart(request.user, menu, quantity, option_ids)
     messages.success(request, _("%(name)s added to cart.") % {"name": menu.item.item_name})
@@ -35,7 +39,11 @@ def view_cart(request):
 def update_cart_item(request, item_id):
     from ..models import Cart
     cart = get_object_or_404(Cart, user=request.user)
-    qty = int(request.POST.get("quantity", 1))
+    try:
+        qty = int(request.POST.get("quantity", 1))
+    except (ValueError, TypeError):
+        qty = 1
+        messages.error(request, _("Invalid quantity. Using quantity 1."))
     try:
         cart_service.update_cart_item_quantity(cart, item_id, qty)
     except CartItem.DoesNotExist:
@@ -46,7 +54,11 @@ def update_cart_item(request, item_id):
 @login_required(login_url="login")
 def add_to_cart_and_checkout(request, item_id):
     menu = get_object_or_404(Menu, id=item_id)
-    quantity = int(request.POST.get("quantity", 1))
+    try:
+        quantity = int(request.POST.get("quantity", 1))
+    except (ValueError, TypeError):
+        quantity = 1
+        messages.error(request, _("Invalid quantity. Using quantity 1."))
     option_ids = request.POST.getlist("options")
     cart_service.add_item_to_cart(request.user, menu, quantity, option_ids)
     return redirect("checkout")
