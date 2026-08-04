@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from api.models import Category, Inventory, Menu, MenuCustomizationOption, Cart, CartItem
+from api.services import cart_service
 
 
 class BaseCartTest(TestCase):
@@ -237,14 +238,11 @@ class TestUpdateCartItem(BaseCartTest):
         self.cart_item.refresh_from_db()
         self.assertEqual(self.cart_item.quantity, 5)
 
-    def test_update_remove_when_zero(self):
-        response = self.client.post(
-            reverse("update_cart_item", args=[self.cart_item.id]),
-            {"quantity": 0},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("view_cart"))
-        self.assertEqual(CartItem.objects.count(), 0)
+    def test_update_rejects_zero_quantity(self):
+        with self.assertRaises(ValueError):
+            cart_service.update_cart_item_quantity(self.cart, self.cart_item.id, 0)
+        self.cart_item.refresh_from_db()
+        self.assertEqual(self.cart_item.quantity, 2)
 
     def test_update_defaults_quantity_to_one(self):
         response = self.client.post(
@@ -255,14 +253,11 @@ class TestUpdateCartItem(BaseCartTest):
         self.cart_item.refresh_from_db()
         self.assertEqual(self.cart_item.quantity, 1)
 
-    def test_update_removes_when_negative_quantity(self):
-        response = self.client.post(
-            reverse("update_cart_item", args=[self.cart_item.id]),
-            {"quantity": -1},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("view_cart"))
-        self.assertEqual(CartItem.objects.count(), 0)
+    def test_update_rejects_negative_quantity(self):
+        with self.assertRaises(ValueError):
+            cart_service.update_cart_item_quantity(self.cart, self.cart_item.id, -1)
+        self.cart_item.refresh_from_db()
+        self.assertEqual(self.cart_item.quantity, 2)
 
     def test_update_redirects_unauthenticated(self):
         self.client.logout()

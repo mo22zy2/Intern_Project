@@ -1,19 +1,3 @@
-from unittest.mock import patch
-from django.template.context import BaseContext
-
-_real_base_copy = BaseContext.__copy__
-
-def _safe_base_context_copy(self):
-    try:
-        return _real_base_copy(self)
-    except AttributeError:
-        dup = object.__new__(type(self))
-        dup.dicts = self.dicts[:]
-        return dup
-
-p = patch.object(BaseContext, "__copy__", _safe_base_context_copy)
-p.start()
-
 from datetime import timedelta
 from django.test import TestCase, Client
 from django.urls import reverse

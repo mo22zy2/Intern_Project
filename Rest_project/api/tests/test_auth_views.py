@@ -59,7 +59,7 @@ class TestRegisterView(TestCase):
         self.assertEqual(response.status_code, 200)
         messages = list(response.wsgi_request._messages)
         self.assertTrue(
-            any("username already exists" in str(m).lower() for m in messages)
+            any("username is taken" in str(m).lower() for m in messages)
         )
 
     def test_register_duplicate_email_returns_error(self):
@@ -70,7 +70,7 @@ class TestRegisterView(TestCase):
         self.assertEqual(response.status_code, 200)
         messages = list(response.wsgi_request._messages)
         self.assertTrue(
-            any("email already exists" in str(m).lower() for m in messages)
+            any("already registered" in str(m).lower() for m in messages)
         )
 
     def test_register_password_mismatch_returns_error(self):

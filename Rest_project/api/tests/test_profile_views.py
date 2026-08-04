@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
-from api.models import UserSettings, Review, PaymentMethod, Category, Inventory, Menu
+from api.models import UserSettings, Review, PaymentMethod, Category, Inventory, Menu, Order, OrderItem
 
 
 class TestProfileView(TestCase):
@@ -267,6 +267,8 @@ class TestAddReview(TestCase):
         self.menu = Menu.objects.create(
             item=inventory, category=category, price=15.99
         )
+        order = Order.objects.create(user=self.user, total_price=15.99, status="confirmed")
+        OrderItem.objects.create(order=order, menu=self.menu, quantity=1, unit_price=15.99)
         self.url = reverse("add_review", args=[self.menu.id])
 
     def test_add_review_requires_login(self):
