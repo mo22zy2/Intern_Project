@@ -8,11 +8,11 @@ class RegisterRequest(BaseModel):
     username: str
     password: str
     confirm_password: str
-    email: str
+    email: EmailStr
     first_name: str
     last_name: str
-    phone: str
-    birth: date
+    phone: Optional[str] = None
+    birth: Optional[date] = None
 
 
 class LoginRequest(BaseModel):
@@ -85,7 +85,7 @@ class MenuItemOut(BaseModel):
 
 # ----- Cart -----
 class CartItemCreate(BaseModel):
-    menu_id: int
+    menu_id: Optional[int] = None
     option_ids: list[int] = []
     quantity: int = Field(default=1, gt=0)
 
@@ -217,9 +217,9 @@ class ReviewOut(BaseModel):
 # ----- Payment -----
 class PaymentMethodCreate(BaseModel):
     card_number: str
-    cardholder_name: str
-    expiry: str
-    cvv: str
+    cardholder_name: Optional[str] = None
+    expiry: Optional[str] = None
+    cvv: Optional[str] = None
     is_default: bool = False
 
 

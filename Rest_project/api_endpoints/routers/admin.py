@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..schemas import (
@@ -150,6 +151,8 @@ def admin_menu_add(
         return MessageResponse(message="Menu item added")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except ObjectDoesNotExist:
+        raise HTTPException(status_code=400, detail="Invalid category")
 
 
 @router.delete("/menu/{item_id}", response_model=MessageResponse)
@@ -328,6 +331,10 @@ def admin_toggle_staff(
     user_id: int,
     admin_user=Depends(get_current_staff_user),
 ):
+    if not admin_user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser access required")
+    if user_id == admin_user.id:
+        raise HTTPException(status_code=403, detail="You cannot change your own staff status")
     try:
         u = admin_service.toggle_user_staff(user_id)
         role = "staff" if u.is_staff else "regular"
@@ -341,6 +348,10 @@ def admin_toggle_active(
     user_id: int,
     admin_user=Depends(get_current_staff_user),
 ):
+    if not admin_user.is_superuser:
+        raise HTTPException(status_code=403, detail="Superuser access required")
+    if user_id == admin_user.id:
+        raise HTTPException(status_code=403, detail="You cannot change your own account status")
     try:
         u = admin_service.toggle_user_active(user_id)
         status = "active" if u.is_active else "banned"
@@ -377,7 +388,9 @@ def admin_sales_report(
 
 @router.get("/reports/inventory")
 def admin_inventory_report(user=Depends(get_current_staff_user)):
+    from api.models import Menu
     inventory = admin_service.get_all_inventory()
+    prices = dict(Menu.objects.values_list("item_id", "price"))
     return {
         "items": [
             {
@@ -392,7 +405,7 @@ def admin_inventory_report(user=Depends(get_current_staff_user)):
             for inv in inventory
         ],
         "total_value": sum(
-            inv.item_count * 0 for inv in inventory
+            (inv.item_count or 0) * prices.get(inv.id, 0) for inv in inventory
         ),
     }
 

@@ -7,7 +7,7 @@ from api.services import auth_service
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=TokenResponse)
+@router.post("/register", response_model=TokenResponse, status_code=201)
 def register(body: RegisterRequest):
     username = body.username.strip().lower()
 

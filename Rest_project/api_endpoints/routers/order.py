@@ -1,6 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist
 from fastapi import APIRouter, Depends, HTTPException
 
-from ..schemas import PlaceOrderRequest, MessageResponse
+from ..schemas import PlaceOrderRequest, OrderOut
 from ..auth_utils import get_current_user
 from api.services import order_service
 
@@ -8,9 +9,15 @@ from api.services import order_service
 def _sync_cart_from_items(user, items):
     from api.models import Cart, CartItem, Menu
     cart, _ = Cart.objects.get_or_create(user=user)
-    CartItem.objects.filter(cart=cart).delete()
+    resolved = []
     for item in items:
-        menu = Menu.objects.get(id=item.menu_id)
+        try:
+            menu = Menu.objects.get(id=item.menu_id)
+        except Menu.DoesNotExist:
+            raise ValueError(f"Invalid menu item id {item.menu_id}")
+        resolved.append((menu, item))
+    CartItem.objects.filter(cart=cart).delete()
+    for menu, item in resolved:
         CartItem.objects.create(
             cart=cart,
             menu=menu,
@@ -46,14 +53,14 @@ def checkout(user=Depends(get_current_user)):
     }
 
 
-@router.post("/checkout/place", response_model=MessageResponse, status_code=201)
+@router.post("/checkout/place", response_model=OrderOut, status_code=201)
 def place_order(
     body: PlaceOrderRequest,
     user=Depends(get_current_user),
 ):
     try:
         _sync_cart_from_items(user, body.items)
-        order_service.place_order(
+        order = order_service.place_order(
             user=user,
             delivery_type=body.delivery_type,
             delivery_address=body.delivery_address.strip() if body.delivery_address else "",
@@ -69,10 +76,31 @@ def place_order(
         if body.save_address and body.delivery_address:
             user.address = body.delivery_address.strip()
             user.save(update_fields=["address"])
-    except ValueError as e:
+    except (ValueError, ObjectDoesNotExist) as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    return MessageResponse(message="Order placed successfully")
+    return {
+        "id": order.id,
+        "user_id": order.user_id,
+        "delivery_type": order.delivery_type,
+        "delivery_address": order.delivery_address,
+        "order_number": order.order_number,
+        "status": order.status,
+        "total_price": order.total_price,
+        "created_at": order.created_at,
+        "qr_data": order.qr_data,
+        "items": [
+            {
+                "id": oi.id,
+                "menu_id": oi.menu_id,
+                "item_name": oi.menu.item.item_name,
+                "quantity": oi.quantity,
+                "unit_price": oi.unit_price,
+                "options_text": oi.options_text or "",
+            }
+            for oi in order.orderitem_set.all()
+        ],
+    }
 
 
 @router.get("/")
@@ -97,7 +125,7 @@ def _order_to_out(o):
     if not payment:
         try:
             payment = o.payment_rel
-        except:
+        except AttributeError:
             payment = None
     return {
         "id": o.id,

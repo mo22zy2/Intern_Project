@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..schemas import PaymentMethodCreate, MessageResponse
@@ -35,8 +36,7 @@ def delete_payment_method(
 ):
     try:
         payment_service.delete_payment_method(user, method_id)
-    except Exception:
-        from api.models import PaymentMethod
+    except ObjectDoesNotExist:
         raise HTTPException(status_code=404, detail="Payment method not found")
     return MessageResponse(message="Payment method deleted successfully")
 
@@ -48,9 +48,8 @@ def set_default_payment_method(
 ):
     try:
         payment_service.set_default_payment_method(user, method_id)
-    except Exception:
-        from api.models import PaymentMethod
-        raise HTTPException(status_code=400, detail="Payment method not found")
+    except ObjectDoesNotExist:
+        raise HTTPException(status_code=404, detail="Payment method not found")
     return MessageResponse(message="Default payment method updated")
 
 

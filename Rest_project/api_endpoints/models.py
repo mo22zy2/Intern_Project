@@ -24,7 +24,10 @@ class User(Base):
     date_joined = Column(DateTime, default=func.now())
     phone = Column(String(15), default="")
     birth = Column(Date, nullable=True)
+    address = Column(Text, default="")
     created_at = Column(DateTime, default=func.now())
+    telegram_chat_id = Column(String(50), nullable=True)
+    telegram_verification_code = Column(String(100), nullable=True)
 
 
 class UserSettings(Base):
@@ -117,8 +120,11 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("api_user.id"), nullable=False)
     delivery_type = Column(String(20), default="delivery")
     delivery_address = Column(Text, default="")
+    pickup_date = Column(Date, nullable=True)
+    pickup_time = Column(Time, nullable=True)
     reservation_id = Column(Integer, ForeignKey("api_reservationsystem.id"), nullable=True)
-    status = Column(String(20), default="confirmed")
+    order_number = Column(Integer, nullable=False, default=0)
+    status = Column(String(20), default="pending")
     total_price = Column(Float, nullable=False)
     created_at = Column(DateTime, default=func.now())
     qr_data = Column(Text, nullable=True)
@@ -150,7 +156,7 @@ class ReservationSystem(Base):
     reservation_date = Column(Date, nullable=False)
     reservation_time = Column(Time, nullable=False)
     seats = Column(Integer, nullable=False)
-    status = Column(String(20), default="confirmed")
+    status = Column(String(20), default="pending")
     created_at = Column(DateTime, default=func.now())
 
 

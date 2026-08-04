@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from ..schemas import CartItemCreate, CartItemUpdate, CartOut, CartItemOut, MessageResponse
@@ -75,8 +76,7 @@ def update_cart_item(
     cart = cart_service.get_or_create_cart(user)
     try:
         cart_service.update_cart_item_quantity(cart, item_id, body.quantity)
-    except Exception:
-        from api.models import CartItem
+    except ObjectDoesNotExist:
         raise HTTPException(status_code=404, detail="Item not in cart")
     return MessageResponse(message="Cart updated")
 
@@ -89,7 +89,6 @@ def remove_from_cart(
     cart = cart_service.get_or_create_cart(user)
     try:
         cart_service.remove_cart_item(cart, item_id)
-    except Exception:
-        from api.models import CartItem
+    except ObjectDoesNotExist:
         raise HTTPException(status_code=404, detail="Item not in cart")
     return MessageResponse(message="Item removed from cart")
